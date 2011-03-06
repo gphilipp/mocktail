@@ -10,7 +10,7 @@
   <inheritedByDefault>true</inheritedByDefault>
   <mojos>
     <mojo>
-      <goal>touch</goal>
+      <goal>smok</goal>
       <description>Goal which touches a timestamp file.</description>
       <requiresDirectInvocation>false</requiresDirectInvocation>
       <requiresProject>true</requiresProject>
@@ -18,12 +18,206 @@
       <aggregator>false</aggregator>
       <requiresOnline>false</requiresOnline>
       <inheritedByDefault>true</inheritedByDefault>
-      <phase>process-sources</phase>
+      <phase>compile</phase>
       <implementation>com.xebia.SmokMojo</implementation>
       <language>java</language>
       <instantiationStrategy>per-lookup</instantiationStrategy>
       <executionStrategy>once-per-session</executionStrategy>
       <parameters>
+        <parameter>
+          <name>XaddSerialVersionUID</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Causes the compiler to calculate and add the SerialVersionUID field to any type implementing Serializable that is affected by an aspect. 
+The field is calculated based on the class before weaving has taken place.</description>
+        </parameter>
+        <parameter>
+          <name>XhasMember</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Enables the compiler to support hasmethod(method_pattern) 
+and hasfield(field_pattern) type patterns,
+but only within declare statements. 
+
+It&apos;s experimental and undocumented because it may change, 
+and because it doesn&apos;t yet take into account ITDs.</description>
+        </parameter>
+        <parameter>
+          <name>Xlint</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Set default level for messages about potential 
+programming mistakes in crosscutting code. 
+{level} may be ignore, warning, or error. 
+This overrides entries in org/aspectj/weaver/XlintDefault.properties 
+from aspectjtools.jar.</description>
+        </parameter>
+        <parameter>
+          <name>XnoInline</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>(Experimental) do not inline around advice</description>
+        </parameter>
+        <parameter>
+          <name>Xreweavable</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>(Experimental) runs weaver in reweavable mode which causes it to create 
+woven classes that can be rewoven, subject to the restriction 
+that on attempting a reweave all the types that advised the woven 
+type must be accessible.</description>
+        </parameter>
+        <parameter>
+          <name>XserializableAspects</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>(Experimental) Normally it is an error to declare aspects Serializable. This option removes that restriction.</description>
+        </parameter>
+        <parameter>
+          <name>ajdtBuildDefFile</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Where to find the ajdt build definition file.
+&lt;i&gt;If set this will override the use of project sourcedirs&lt;/i&gt;.</description>
+        </parameter>
+        <parameter>
+          <name>argumentFileName</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>The filename to store build configuration in.
+This file will be placed in the project build output
+directory, and will contain all the arguments
+passed to the compiler in the last run, and also
+all the filenames included in the build. Aspects as
+well as java files.</description>
+        </parameter>
+        <parameter>
+          <name>aspectDirectory</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>The source directory for the aspects</description>
+        </parameter>
+        <parameter>
+          <name>basedir</name>
+          <type>java.io.File</type>
+          <required>true</required>
+          <editable>false</editable>
+          <description>The basedir of the project.</description>
+        </parameter>
+        <parameter>
+          <name>bootclasspath</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Override location of VM&apos;s bootclasspath for purposes of evaluating types when compiling. 
+Path is a single argument containing a list of paths to zip files or directories, delimited by the platform-specific path delimiter.</description>
+        </parameter>
+        <parameter>
+          <name>complianceLevel</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Specify compiler compliance setting (1.3 to 1.6)
+default is 1.4</description>
+        </parameter>
+        <parameter>
+          <name>deprecation</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Toggle warningmessages on deprecations</description>
+        </parameter>
+        <parameter>
+          <name>emacssym</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Generate .ajesym symbol files for emacs support</description>
+        </parameter>
+        <parameter>
+          <name>encoding</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Specify default source encoding format.</description>
+        </parameter>
+        <parameter>
+          <name>excludes</name>
+          <type>java.lang.String[]</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>List of ant-style patterns used to specify the aspects that should be excluded when 
+compiling. When none specified all .java and .aj files in the project source directories, or
+directories spesified by the ajdtDefFile property are included.</description>
+        </parameter>
+        <parameter>
+          <name>forceAjcCompile</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Forces re-compilation, regardless of whether the compiler arguments or
+the sources have changed.</description>
+        </parameter>
+        <parameter>
+          <name>includes</name>
+          <type>java.lang.String[]</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>List of ant-style patterns used to specify the aspects that should be included when 
+compiling. When none specified all .java and .aj files in the project source directories, or
+directories spesified by the ajdtDefFile property are included.</description>
+        </parameter>
+        <parameter>
+          <name>noImportError</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Emit no errors for unresolved imports;</description>
+        </parameter>
+        <parameter>
+          <name>outxml</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Generate aop.xml file for load-time weaving with default name.(/META-INF/aop.xml)</description>
+        </parameter>
+        <parameter>
+          <name>outxmlfile</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Generate aop.xml file for load-time weaving with custom name.</description>
+        </parameter>
+        <parameter>
+          <name>preserveAllLocals</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Preserve all local variables during code generation (to facilitate debugging).</description>
+        </parameter>
+        <parameter>
+          <name>proceedOnError</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Keep compiling after error, dumping class files with problem methods</description>
+        </parameter>
+        <parameter>
+          <name>project</name>
+          <type>org.apache.maven.project.MavenProject</type>
+          <required>true</required>
+          <editable>false</editable>
+          <description>The maven project.</description>
+        </parameter>
         <parameter>
           <name>recordingDirectory</name>
           <type>java.io.File</type>
@@ -32,17 +226,78 @@
           <description></description>
         </parameter>
         <parameter>
-          <name>resources</name>
-          <type>java.util.List</type>
-          <required>true</required>
-          <editable>false</editable>
-          <description>List of Resource objects for the current build, containing directory,
-includes, and excludes.</description>
+          <name>referenceInfo</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Compute reference information.</description>
+        </parameter>
+        <parameter>
+          <name>repeat</name>
+          <type>int</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Repeat compilation process N times (typically to do performance analysis).</description>
+        </parameter>
+        <parameter>
+          <name>showWeaveInfo</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Emit messages about weaving</description>
+        </parameter>
+        <parameter>
+          <name>source</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Toggle assertions (1.3, 1.4, or 1.6 - default is 1.4). 
+When using -source 1.3, an assert() statement valid under Java 1.4 
+will result in a compiler error. When using -source 1.4, 
+treat assert as a keyword and implement assertions 
+according to the 1.4 language spec. 
+When using -source 1.5 or higher, Java 5 language features are permitted.</description>
+        </parameter>
+        <parameter>
+          <name>target</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Specify classfile target setting (1.1 to 1.6) default is 1.2</description>
+        </parameter>
+        <parameter>
+          <name>testAspectDirectory</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>The source directory for the test aspects</description>
+        </parameter>
+        <parameter>
+          <name>verbose</name>
+          <type>boolean</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Emit messages about accessed/processed compilation units</description>
+        </parameter>
+        <parameter>
+          <name>warn</name>
+          <type>java.lang.String</type>
+          <required>false</required>
+          <editable>true</editable>
+          <description>Emit warnings for any instances of the comma-delimited list of questionable code (eg &apos;unusedLocals,deprecation&apos;):
+see http://www.eclipse.org/aspectj/doc/released/devguide/ajc-ref.html#ajc for available settings</description>
         </parameter>
       </parameters>
       <configuration>
+        <argumentFileName implementation="java.lang.String" default-value="builddef.lst"/>
+        <aspectDirectory implementation="java.lang.String" default-value="src/main/aspect"/>
+        <basedir implementation="java.io.File">${basedir}</basedir>
+        <encoding implementation="java.lang.String">${project.build.sourceEncoding}</encoding>
+        <project implementation="org.apache.maven.project.MavenProject" default-value="${project}"/>
         <recordingDirectory implementation="java.io.File">�</recordingDirectory>
-        <resources implementation="java.util.List" default-value="${project.resources}"/>
+        <source implementation="java.lang.String" default-value="${project.build.java.target}"/>
+        <target implementation="java.lang.String" default-value="${project.build.java.target}"/>
+        <testAspectDirectory implementation="java.lang.String" default-value="src/test/aspect"/>
       </configuration>
     </mojo>
     <mojo>
@@ -104,10 +359,10 @@ includes, and excludes.</description>
       <version>2.2.1</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-model</artifactId>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
       <type>jar</type>
-      <version>2.0</version>
+      <version>2.0.2</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -116,16 +371,10 @@ includes, and excludes.</description>
       <version>1.0.4</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-project</artifactId>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-compiler-api</artifactId>
       <type>jar</type>
-      <version>2.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-profile</artifactId>
-      <type>jar</type>
-      <version>2.0.2</version>
+      <version>1.5.3</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
@@ -140,6 +389,42 @@ includes, and excludes.</description>
       <version>1.1-alpha-2</version>
     </dependency>
     <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-compiler-manager</artifactId>
+      <type>jar</type>
+      <version>1.5.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.plexus</groupId>
+      <artifactId>plexus-compiler-javac</artifactId>
+      <type>jar</type>
+      <version>1.5.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-artifact</artifactId>
+      <type>jar</type>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-model</artifactId>
+      <type>jar</type>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-project</artifactId>
+      <type>jar</type>
+      <version>2.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-profile</artifactId>
+      <type>jar</type>
+      <version>2.0.2</version>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact-manager</artifactId>
       <type>jar</type>
@@ -152,16 +437,64 @@ includes, and excludes.</description>
       <version>2.0.2</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-artifact</artifactId>
-      <type>jar</type>
-      <version>2.0.2</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.maven.wagon</groupId>
       <artifactId>wagon-provider-api</artifactId>
       <type>jar</type>
       <version>1.0-alpha-6</version>
+    </dependency>
+    <dependency>
+      <groupId>org.codehaus.mojo</groupId>
+      <artifactId>aspectj-maven-plugin</artifactId>
+      <type>jar</type>
+      <version>1.3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjtools</artifactId>
+      <type>jar</type>
+      <version>1.6.7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.reporting</groupId>
+      <artifactId>maven-reporting-api</artifactId>
+      <type>jar</type>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>doxia</groupId>
+      <artifactId>doxia-sink-api</artifactId>
+      <type>jar</type>
+      <version>1.0-alpha-4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.maven.reporting</groupId>
+      <artifactId>maven-reporting-impl</artifactId>
+      <type>jar</type>
+      <version>2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-validator</groupId>
+      <artifactId>commons-validator</artifactId>
+      <type>jar</type>
+      <version>1.1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>oro</groupId>
+      <artifactId>oro</artifactId>
+      <type>jar</type>
+      <version>2.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>doxia</groupId>
+      <artifactId>doxia-core</artifactId>
+      <type>jar</type>
+      <version>1.0-alpha-4</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <type>jar</type>
+      <version>2.4</version>
     </dependency>
   </dependencies>
 </plugin>

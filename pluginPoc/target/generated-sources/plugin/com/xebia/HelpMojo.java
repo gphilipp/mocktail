@@ -10,7 +10,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 /**
  * Display help information on smok.<br/> Call <pre>  mvn smok:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</pre> to display parameter details.
  *
- * @version generated on Wed Feb 16 17:29:07 IST 2011
+ * @version generated on Tue Mar 01 23:49:31 IST 2011
  * @author org.apache.maven.tools.plugin.generator.PluginHelpGenerator (version 2.5.1)
  * @goal help
  * @requiresProject false
@@ -105,9 +105,9 @@ public class HelpMojo
             }
         }
 
-        if ( goal == null || goal.length() <= 0 || "touch".equals( goal ) )
+        if ( goal == null || goal.length() <= 0 || "smok".equals( goal ) )
         {
-            append( sb, "smok:touch", 0 );
+            append( sb, "smok:smok", 0 );
             append( sb, "Goal which touches a timestamp file.", 1 );
             append( sb, "", 0 );
             if ( detail )
@@ -115,8 +115,128 @@ public class HelpMojo
                 append( sb, "Available parameters:", 1 );
                 append( sb, "", 0 );
 
+                append( sb, "ajdtBuildDefFile", 2 );
+                append( sb, "Where to find the ajdt build definition file. If set this will override the use of project sourcedirs.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "argumentFileName (Default: builddef.lst)", 2 );
+                append( sb, "The filename to store build configuration in. This file will be placed in the project build output directory, and will contain all the arguments passed to the compiler in the last run, and also all the filenames included in the build. Aspects as well as java files.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "aspectDirectory (Default: src/main/aspect)", 2 );
+                append( sb, "The source directory for the aspects", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "bootclasspath", 2 );
+                append( sb, "Override location of VM\'s bootclasspath for purposes of evaluating types when compiling. Path is a single argument containing a list of paths to zip files or directories, delimited by the platform-specific path delimiter.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "complianceLevel", 2 );
+                append( sb, "Specify compiler compliance setting (1.3 to 1.6) default is 1.4", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "deprecation", 2 );
+                append( sb, "Toggle warningmessages on deprecations", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "emacssym", 2 );
+                append( sb, "Generate .ajesym symbol files for emacs support", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "encoding", 2 );
+                append( sb, "Specify default source encoding format.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "excludes", 2 );
+                append( sb, "List of ant-style patterns used to specify the aspects that should be excluded when compiling. When none specified all .java and .aj files in the project source directories, or directories spesified by the ajdtDefFile property are included.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "forceAjcCompile", 2 );
+                append( sb, "Forces re-compilation, regardless of whether the compiler arguments or the sources have changed.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "includes", 2 );
+                append( sb, "List of ant-style patterns used to specify the aspects that should be included when compiling. When none specified all .java and .aj files in the project source directories, or directories spesified by the ajdtDefFile property are included.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "noImportError", 2 );
+                append( sb, "Emit no errors for unresolved imports;", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "outxml", 2 );
+                append( sb, "Generate aop.xml file for load-time weaving with default name.(/META-INF/aop.xml)", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "outxmlfile", 2 );
+                append( sb, "Generate aop.xml file for load-time weaving with custom name.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "preserveAllLocals", 2 );
+                append( sb, "Preserve all local variables during code generation (to facilitate debugging).", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "proceedOnError", 2 );
+                append( sb, "Keep compiling after error, dumping class files with problem methods", 3 );
+                append( sb, "", 0 );
+
                 append( sb, "recordingDirectory", 2 );
                 append( sb, "(no description available)", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "referenceInfo", 2 );
+                append( sb, "Compute reference information.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "repeat", 2 );
+                append( sb, "Repeat compilation process N times (typically to do performance analysis).", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "showWeaveInfo", 2 );
+                append( sb, "Emit messages about weaving", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "source (Default: ${project.build.java.target})", 2 );
+                append( sb, "Toggle assertions (1.3, 1.4, or 1.6 - default is 1.4). When using -source 1.3, an assert() statement valid under Java 1.4 will result in a compiler error. When using -source 1.4, treat assert as a keyword and implement assertions according to the 1.4 language spec. When using -source 1.5 or higher, Java 5 language features are permitted.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "target (Default: ${project.build.java.target})", 2 );
+                append( sb, "Specify classfile target setting (1.1 to 1.6) default is 1.2", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "testAspectDirectory (Default: src/test/aspect)", 2 );
+                append( sb, "The source directory for the test aspects", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "verbose", 2 );
+                append( sb, "Emit messages about accessed/processed compilation units", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "warn", 2 );
+                append( sb, "Emit warnings for any instances of the comma-delimited list of questionable code (eg \'unusedLocals,deprecation\'): see http://www.eclipse.org/aspectj/doc/released/devguide/ajc-ref.html#ajc for available settings", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "XaddSerialVersionUID", 2 );
+                append( sb, "Causes the compiler to calculate and add the SerialVersionUID field to any type implementing Serializable that is affected by an aspect. The field is calculated based on the class before weaving has taken place.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "XhasMember", 2 );
+                append( sb, "Enables the compiler to support hasmethod(method_pattern) and hasfield(field_pattern) type patterns, but only within declare statements. It\'s experimental and undocumented because it may change, and because it doesn\'t yet take into account ITDs.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "Xlint", 2 );
+                append( sb, "Set default level for messages about potential programming mistakes in crosscutting code. {level} may be ignore, warning, or error. This overrides entries in org/aspectj/weaver/XlintDefault.properties from aspectjtools.jar.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "XnoInline", 2 );
+                append( sb, "(Experimental) do not inline around advice", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "Xreweavable", 2 );
+                append( sb, "(Experimental) runs weaver in reweavable mode which causes it to create woven classes that can be rewoven, subject to the restriction that on attempting a reweave all the types that advised the woven type must be accessible.", 3 );
+                append( sb, "", 0 );
+
+                append( sb, "XserializableAspects", 2 );
+                append( sb, "(Experimental) Normally it is an error to declare aspects Serializable. This option removes that restriction.", 3 );
                 append( sb, "", 0 );
             }
         }
