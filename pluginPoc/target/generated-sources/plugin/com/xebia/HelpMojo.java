@@ -10,7 +10,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 /**
  * Display help information on smok.<br/> Call <pre>  mvn smok:help -Ddetail=true -Dgoal=&lt;goal-name&gt;</pre> to display parameter details.
  *
- * @version generated on Wed Mar 16 18:25:06 IST 2011
+ * @version generated on Thu Jun 30 14:20:47 IST 2011
  * @author org.apache.maven.tools.plugin.generator.PluginHelpGenerator (version 2.5.1)
  * @goal help
  * @requiresProject false
