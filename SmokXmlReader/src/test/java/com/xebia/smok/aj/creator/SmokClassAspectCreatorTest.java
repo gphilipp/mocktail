@@ -84,4 +84,25 @@ public class SmokClassAspectCreatorTest {
 			}
 		}.createAspect(classSmok, aspectDir);
 	}
+	
+	@Test
+	public void shouldCreatePlaybackAspectForClassWithoutPackage() throws Exception {
+		SmokContainer.initializeContainer("");
+		SmokContext smokContext = SmokContext.getSmokContext("root_dir");
+		DirectFieldAccessor dfa = new DirectFieldAccessor(smokContext);
+		//Need to set as Smok Context is a singleton class and is getting set-upped from multiple places
+		dfa.setPropertyValue("recordingDirectory", "root_dir");
+		
+		final Smok classSmok = SmokObjectMother.createClassSmok("FQCN", "");
+		new SmokClassAspectCreator(SmokMode.PLAYBACK_MODE) {
+			@Override
+			protected void createAspectFile(Smok smok, String fileName, File directory,
+					String templatedClassObjectString) throws IOException {
+				assertThat(fileName, is(classSmok.getClassName()));
+				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
+				assertThat(templatedClassObjectString, containsString("String fqcn = \"FQCN\";"));
+				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* FQCN.*(..));"));
+			}
+		}.createAspect(classSmok, aspectDir);
+	}
 }
