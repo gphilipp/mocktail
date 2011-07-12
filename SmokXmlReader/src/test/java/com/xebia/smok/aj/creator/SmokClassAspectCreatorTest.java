@@ -64,17 +64,24 @@ public class SmokClassAspectCreatorTest {
 		}.createAspect(classSmok, aspectDir);
 	}
 
-	/*@Test
+	@Test
 	public void shouldCreatePlaybackAspectForClass() throws Exception {
-		final Smok classSmok = SmokObjectMother.createClassSmok("FQCN");
+		SmokContainer.initializeContainer("");
+		SmokContext smokContext = SmokContext.getSmokContext("root_dir");
+		DirectFieldAccessor dfa = new DirectFieldAccessor(smokContext);
+		//Need to set as Smok Context is a singleton class and is getting set-upped from multiple places
+		dfa.setPropertyValue("recordingDirectory", "root_dir");
+		
+		final Smok classSmok = SmokObjectMother.createClassSmok("FQCN", "com.xebia");
 		new SmokClassAspectCreator(SmokMode.PLAYBACK_MODE) {
 			@Override
-			protected void createAspectFile(String fileName, File directory,
+			protected void createAspectFile(Smok smok, String fileName, File directory,
 					String templatedClassObjectString) throws IOException {
 				assertThat(fileName, is(classSmok.getClassName()));
-				assertThat(templatedClassObjectString, containsString(classSmok.getClassName()));
-				assertThat(templatedClassObjectString, containsString("I'll skip the actual execution"));
+				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
+				assertThat(templatedClassObjectString, containsString("String fqcn = \"com.xebia.FQCN\";"));
+				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* com.xebia.FQCN.*(..));"));
 			}
 		}.createAspect(classSmok, aspectDir);
-	}*/
+	}
 }
