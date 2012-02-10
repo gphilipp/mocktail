@@ -7,6 +7,7 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 import java.io.IOException;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.springframework.beans.DirectFieldAccessor;
@@ -22,13 +23,17 @@ public class SmokClassAspectCreatorTest {
 	@Mock
 	File aspectsRootDir;
 	
-	@Test
-	public void shouldCreateRecordingAspectForClass() throws Exception {
+	@Before
+	public void setup(){
 		SmokContainer.initializeContainer("");
 		SmokContext smokContext = SmokContext.getSmokContext();
 		DirectFieldAccessor dfa = new DirectFieldAccessor(smokContext);
 		//Need to set as Smok Context is a singleton class and is getting set-upped from multiple places
 		dfa.setPropertyValue("recordingDirectory", "root_dir");
+	}
+	
+	@Test
+	public void shouldCreateRecordingAspectForClass() throws Exception {
 		
 		final Smok classSmok = SmokObjectMother.createClassSmok("name", "com.xebia");
 		
@@ -47,12 +52,7 @@ public class SmokClassAspectCreatorTest {
 	
 	@Test
 	public void shouldCreateRecordingAspectForClassWithoutPackage() throws Exception {
-		SmokContainer.initializeContainer("");
-		SmokContext smokContext = SmokContext.getSmokContext();
-		DirectFieldAccessor dfa = new DirectFieldAccessor(smokContext);
-		//Need to set as Smok Context is a singleton class and is getting set-upped from multiple places
-		dfa.setPropertyValue("recordingDirectory", "root_dir");
-		
+	
 		final Smok classSmok = SmokObjectMother.createClassSmok("name", "");
 		new SmokClassAspectCreator(SmokMode.RECORDING_MODE) {
 			@Override
@@ -69,12 +69,7 @@ public class SmokClassAspectCreatorTest {
 
 	@Test
 	public void shouldCreatePlaybackAspectForClass() throws Exception {
-		SmokContainer.initializeContainer("");
-		SmokContext smokContext = SmokContext.getSmokContext();
-		DirectFieldAccessor dfa = new DirectFieldAccessor(smokContext);
-		//Need to set as Smok Context is a singleton class and is getting set-upped from multiple places
-		dfa.setPropertyValue("recordingDirectory", "root_dir");
-		
+	
 		final Smok classSmok = SmokObjectMother.createClassSmok("name", "com.xebia");
 		new SmokClassAspectCreator(SmokMode.PLAYBACK_MODE) {
 			@Override
@@ -91,12 +86,7 @@ public class SmokClassAspectCreatorTest {
 	
 	@Test
 	public void shouldCreatePlaybackAspectForClassWithoutPackage() throws Exception {
-		SmokContainer.initializeContainer("");
-		SmokContext smokContext = SmokContext.getSmokContext();
-		DirectFieldAccessor dfa = new DirectFieldAccessor(smokContext);
-		//Need to set as Smok Context is a singleton class and is getting set-upped from multiple places
-		dfa.setPropertyValue("recordingDirectory", "root_dir");
-		
+	
 		final Smok classSmok = SmokObjectMother.createClassSmok("name", "");
 		new SmokClassAspectCreator(SmokMode.PLAYBACK_MODE) {
 			@Override
