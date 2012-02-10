@@ -70,20 +70,21 @@ public class SmokClassAspectCreatorTest {
 	@Test
 	public void shouldCreatePlaybackAspectForClass() throws Exception {
 		SmokContainer.initializeContainer("");
-		SmokContext smokContext = SmokContext.getSmokContext("root_dir");
+		SmokContext smokContext = SmokContext.getSmokContext();
 		DirectFieldAccessor dfa = new DirectFieldAccessor(smokContext);
 		//Need to set as Smok Context is a singleton class and is getting set-upped from multiple places
 		dfa.setPropertyValue("recordingDirectory", "root_dir");
 		
-		final Smok classSmok = SmokObjectMother.createClassSmok("FQCN", "com.xebia");
+		final Smok classSmok = SmokObjectMother.createClassSmok("name", "com.xebia");
 		new SmokClassAspectCreator(SmokMode.PLAYBACK_MODE) {
 			@Override
 			protected void createAspectFile(Smok smok, String fileName, File directory,
 					String templatedClassObjectString) throws IOException {
 				assertThat(fileName, is(classSmok.getClassName()));
+				assertThat(templatedClassObjectString, containsString("public aspect Aspectname"));
 				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
-				assertThat(templatedClassObjectString, containsString("String fqcn = \"com.xebia.FQCN\";"));
-				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* com.xebia.FQCN.*(..));"));
+				assertThat(templatedClassObjectString, containsString("String fqcn = \"com.xebia.name\";"));
+				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* com.xebia.name.*(..));"));
 			}
 		}.createAspect(classSmok, aspectsRootDir);
 	}
@@ -91,20 +92,21 @@ public class SmokClassAspectCreatorTest {
 	@Test
 	public void shouldCreatePlaybackAspectForClassWithoutPackage() throws Exception {
 		SmokContainer.initializeContainer("");
-		SmokContext smokContext = SmokContext.getSmokContext("root_dir");
+		SmokContext smokContext = SmokContext.getSmokContext();
 		DirectFieldAccessor dfa = new DirectFieldAccessor(smokContext);
 		//Need to set as Smok Context is a singleton class and is getting set-upped from multiple places
 		dfa.setPropertyValue("recordingDirectory", "root_dir");
 		
-		final Smok classSmok = SmokObjectMother.createClassSmok("FQCN", "");
+		final Smok classSmok = SmokObjectMother.createClassSmok("name", "");
 		new SmokClassAspectCreator(SmokMode.PLAYBACK_MODE) {
 			@Override
 			protected void createAspectFile(Smok smok, String fileName, File directory,
 					String templatedClassObjectString) throws IOException {
 				assertThat(fileName, is(classSmok.getClassName()));
+				assertThat(templatedClassObjectString, containsString("public aspect Aspectname"));
+				assertThat(templatedClassObjectString, containsString("String fqcn = \"name\";"));
 				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
-				assertThat(templatedClassObjectString, containsString("String fqcn = \"FQCN\";"));
-				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* FQCN.*(..));"));
+				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* name.*(..));"));
 			}
 		}.createAspect(classSmok, aspectsRootDir);
 	}
