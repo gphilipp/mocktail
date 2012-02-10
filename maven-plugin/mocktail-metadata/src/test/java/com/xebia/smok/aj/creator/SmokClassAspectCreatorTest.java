@@ -35,17 +35,18 @@ public class SmokClassAspectCreatorTest {
 	@Test
 	public void shouldCreateRecordingAspectForClass() throws Exception {
 		
-		final Smok classSmok = SmokObjectMother.createClassSmok("name", "com.xebia");
+		final Smok classSmok = SmokObjectMother.createClassSmok("AspectedClass", "com.sandy");
 		
 		new SmokClassAspectCreator(SmokMode.RECORDING_MODE) {
 			@Override
 			protected void createAspectFile(Smok smok, String aspectFileName, File aspectsRootDirecotry,
 					String templatedClassObjectString) throws IOException {
 				assertThat(aspectFileName, is(classSmok.getClassName()));
-				assertThat(templatedClassObjectString, containsString("public aspect Aspectname"));
-				assertThat(templatedClassObjectString, containsString("String fqcn = \"com.xebia.name\";"));
+				assertThat(templatedClassObjectString, containsString("public aspect AspectAspectedClass"));
+				assertThat(templatedClassObjectString, containsString("String fqcn = \"com.sandy.AspectedClass\";"));
 				assertThat(templatedClassObjectString, containsString("String recordingDirectoryPath = \"root_dir\";"));
-				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* com.xebia.name.*(..));"));
+				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* com.sandy.AspectedClass.*(..));"));
+				System.out.println(templatedClassObjectString);
 			}
 		}.createAspect(classSmok, aspectsRootDir);
 	}
@@ -70,16 +71,17 @@ public class SmokClassAspectCreatorTest {
 	@Test
 	public void shouldCreatePlaybackAspectForClass() throws Exception {
 	
-		final Smok classSmok = SmokObjectMother.createClassSmok("name", "com.xebia");
+		final Smok classSmok = SmokObjectMother.createClassSmok("AspectedClass", "com.sandy");
 		new SmokClassAspectCreator(SmokMode.PLAYBACK_MODE) {
 			@Override
 			protected void createAspectFile(Smok smok, String fileName, File directory,
 					String templatedClassObjectString) throws IOException {
+				System.out.println(templatedClassObjectString);
 				assertThat(fileName, is(classSmok.getClassName()));
-				assertThat(templatedClassObjectString, containsString("public aspect Aspectname"));
-				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
-				assertThat(templatedClassObjectString, containsString("String fqcn = \"com.xebia.name\";"));
-				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* com.xebia.name.*(..));"));
+				assertThat(templatedClassObjectString, containsString("public aspect AspectAspectedClass"));
+				assertThat(templatedClassObjectString, containsString("String fqcn = \"com.sandy.AspectedClass\";"));
+				assertThat(templatedClassObjectString, containsString("String recordingDirectoryPath = \"root_dir\";"));
+				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* com.sandy.AspectedClass.*(..));"));
 			}
 		}.createAspect(classSmok, aspectsRootDir);
 	}
