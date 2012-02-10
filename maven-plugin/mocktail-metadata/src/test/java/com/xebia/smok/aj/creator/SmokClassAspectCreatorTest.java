@@ -48,20 +48,21 @@ public class SmokClassAspectCreatorTest {
 	@Test
 	public void shouldCreateRecordingAspectForClassWithoutPackage() throws Exception {
 		SmokContainer.initializeContainer("");
-		SmokContext smokContext = SmokContext.getSmokContext("root_dir");
+		SmokContext smokContext = SmokContext.getSmokContext();
 		DirectFieldAccessor dfa = new DirectFieldAccessor(smokContext);
 		//Need to set as Smok Context is a singleton class and is getting set-upped from multiple places
 		dfa.setPropertyValue("recordingDirectory", "root_dir");
 		
-		final Smok classSmok = SmokObjectMother.createClassSmok("FQCN", "");
+		final Smok classSmok = SmokObjectMother.createClassSmok("name", "");
 		new SmokClassAspectCreator(SmokMode.RECORDING_MODE) {
 			@Override
 			protected void createAspectFile(Smok smok, String fileName, File directory,
 					String templatedClassObjectString) throws IOException {
 				assertThat(fileName, is(classSmok.getClassName()));
+				assertThat(templatedClassObjectString, containsString("public aspect Aspectname"));
+				assertThat(templatedClassObjectString, containsString("String fqcn = \"name\";"));
 				assertThat(templatedClassObjectString, containsString("String recordingDirectoryPath = \"root_dir\";"));
-				assertThat(templatedClassObjectString, containsString("String fqcn = \"FQCN\";"));
-				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* FQCN.*(..));"));
+				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* name.*(..));"));
 			}
 		}.createAspect(classSmok, aspectsRootDir);
 	}
