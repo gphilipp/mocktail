@@ -42,9 +42,9 @@ public class SmokClassAspectCreatorTest {
 			protected void createAspectFile(Smok smok, String aspectFileName, File aspectsRootDirecotry,
 					String templatedClassObjectString) throws IOException {
 				assertThat(aspectFileName, is(classSmok.getClassName()));
-				assertThat(templatedClassObjectString, containsString("public aspect AspectAspectedClass"));
+				assertThat(templatedClassObjectString, containsString("public aspect RecorderAspectAspectedClass"));
 				assertThat(templatedClassObjectString, containsString("String fqcn = \"com.sandy.AspectedClass\";"));
-				assertThat(templatedClassObjectString, containsString("String recordingDirectoryPath = \"root_dir\";"));
+				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
 				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* com.sandy.AspectedClass.*(..));"));
 				System.out.println(templatedClassObjectString);
 			}
@@ -60,9 +60,9 @@ public class SmokClassAspectCreatorTest {
 			protected void createAspectFile(Smok smok, String fileName, File directory,
 					String templatedClassObjectString) throws IOException {
 				assertThat(fileName, is(classSmok.getClassName()));
-				assertThat(templatedClassObjectString, containsString("public aspect Aspectname"));
+				assertThat(templatedClassObjectString, containsString("public aspect RecorderAspectname"));
 				assertThat(templatedClassObjectString, containsString("String fqcn = \"name\";"));
-				assertThat(templatedClassObjectString, containsString("String recordingDirectoryPath = \"root_dir\";"));
+				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
 				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* name.*(..));"));
 			}
 		}.createAspect(classSmok, aspectsRootDir);
@@ -80,7 +80,7 @@ public class SmokClassAspectCreatorTest {
 				assertThat(fileName, is(classSmok.getClassName()));
 				assertThat(templatedClassObjectString, containsString("public aspect AspectAspectedClass"));
 				assertThat(templatedClassObjectString, containsString("String fqcn = \"com.sandy.AspectedClass\";"));
-				assertThat(templatedClassObjectString, containsString("String recordingDirectoryPath = \"root_dir\";"));
+				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
 				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* com.sandy.AspectedClass.*(..));"));
 			}
 		}.createAspect(classSmok, aspectsRootDir);
