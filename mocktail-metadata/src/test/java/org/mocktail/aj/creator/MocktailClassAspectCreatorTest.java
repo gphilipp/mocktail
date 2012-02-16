@@ -77,7 +77,7 @@ public class MocktailClassAspectCreatorTest {
 					String templatedClassObjectString) throws IOException {
 				System.out.println(templatedClassObjectString);
 				assertThat(fileName, is(classMocktail.getClassName()));
-				assertThat(templatedClassObjectString, containsString("public aspect AspectAspectedClass"));
+				assertThat(templatedClassObjectString, containsString("public aspect PlaybackAspectAspectedClass"));
 				assertThat(templatedClassObjectString, containsString("String fqcn = \"com.sandy.AspectedClass\";"));
 				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
 				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* com.sandy.AspectedClass.*(..));"));
@@ -94,7 +94,7 @@ public class MocktailClassAspectCreatorTest {
 			protected void createAspectFile(Mocktail mocktail, String fileName, File directory,
 					String templatedClassObjectString) throws IOException {
 				assertThat(fileName, is(classMocktail.getClassName()));
-				assertThat(templatedClassObjectString, containsString("public aspect Aspectname"));
+				assertThat(templatedClassObjectString, containsString("public aspect PlaybackAspectname"));
 				assertThat(templatedClassObjectString, containsString("String fqcn = \"name\";"));
 				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
 				assertThat(templatedClassObjectString, containsString("pointcut callPointcut() : call(* name.*(..));"));
