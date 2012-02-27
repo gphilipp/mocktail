@@ -40,7 +40,7 @@ public class MocktailClassAspectCreatorTest {
 			@Override
 			protected void createAspectFile(Mocktail mocktail, String aspectFileName, File aspectsRootDirecotry,
 					String templatedClassObjectString) throws IOException {
-				assertThat(aspectFileName, is(classMocktail.getClassName()));
+				assertThat(aspectFileName, is("RecorderAspect" +classMocktail.getClassName()));
 				assertThat(templatedClassObjectString, containsString("public aspect RecorderAspectAspectedClass"));
 				assertThat(templatedClassObjectString, containsString("String fqcn = \"com.sandy.AspectedClass\";"));
 				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
@@ -58,7 +58,7 @@ public class MocktailClassAspectCreatorTest {
 			@Override
 			protected void createAspectFile(Mocktail mocktail, String fileName, File directory,
 					String templatedClassObjectString) throws IOException {
-				assertThat(fileName, is(classMocktail.getClassName()));
+				assertThat(fileName, is("RecorderAspect" + classMocktail.getClassName()));
 				assertThat(templatedClassObjectString, containsString("public aspect RecorderAspectname"));
 				assertThat(templatedClassObjectString, containsString("String fqcn = \"name\";"));
 				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
@@ -76,7 +76,7 @@ public class MocktailClassAspectCreatorTest {
 			protected void createAspectFile(Mocktail mocktail, String fileName, File directory,
 					String templatedClassObjectString) throws IOException {
 				System.out.println(templatedClassObjectString);
-				assertThat(fileName, is(classMocktail.getClassName()));
+				assertThat(fileName, is("PlaybackAspect" + classMocktail.getClassName()));
 				assertThat(templatedClassObjectString, containsString("public aspect PlaybackAspectAspectedClass"));
 				assertThat(templatedClassObjectString, containsString("String fqcn = \"com.sandy.AspectedClass\";"));
 				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
@@ -93,7 +93,7 @@ public class MocktailClassAspectCreatorTest {
 			@Override
 			protected void createAspectFile(Mocktail mocktail, String fileName, File directory,
 					String templatedClassObjectString) throws IOException {
-				assertThat(fileName, is(classMocktail.getClassName()));
+				assertThat(fileName, is("PlaybackAspect" + classMocktail.getClassName()));
 				assertThat(templatedClassObjectString, containsString("public aspect PlaybackAspectname"));
 				assertThat(templatedClassObjectString, containsString("String fqcn = \"name\";"));
 				assertThat(templatedClassObjectString, containsString("recordingDirectoryPath = \"root_dir\";"));
