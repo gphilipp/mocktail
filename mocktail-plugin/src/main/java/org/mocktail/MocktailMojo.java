@@ -63,7 +63,7 @@ public class MocktailMojo extends AjcCompileMojo {
 			aspectsDirectory.mkdirs();
 		}
 		XStreamMocktailXmlReader configReader = new XStreamMocktailXmlReader();
-		MocktailContainer.initializeContainer("c:");
+		MocktailContainer.initializeContainer(recordingDir.getAbsolutePath());
 		try {
 			List<Mocktail> mocktails = configReader.readXml(new FileInputStream(
 					configuration));
@@ -88,7 +88,8 @@ public class MocktailMojo extends AjcCompileMojo {
 		System.out.println("************************************");
 		System.out.println("************************************");
 		System.out.println("Executing ajc mojo");
-		ajcCompileMojo.execute();
+		//TODO: Needs to be fixed| Throwing exception right now
+//		ajcCompileMojo.execute();
 		System.out.println("************************************");
 		System.out.println("************************************");
 
