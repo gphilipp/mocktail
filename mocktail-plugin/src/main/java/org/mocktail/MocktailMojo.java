@@ -56,6 +56,13 @@ public class MocktailMojo extends AjcCompileMojo {
 	 * @required
 	 */
 	private File recordingDir;
+	
+	/**
+	 * @parameter expression=�${mode}�
+	 *            default-value="recording"
+	 * @required
+	 */
+	private String mode;
 
 	public void execute() throws MojoExecutionException {
 
@@ -70,10 +77,13 @@ public class MocktailMojo extends AjcCompileMojo {
 					configuration));
 			System.out.println("\n\n " + mocktails + "\n\n");
 			//TODO:A hack for time being as we will be either generating recording/playback aspects at a time
-			/*MocktailAspectsCreator.ASPECTS_CREATOR.createAspects(mocktails,
-					aspectsDirectory, MocktailMode.RECORDING_MODE);*/
-			MocktailAspectsCreator.ASPECTS_CREATOR.createAspects(mocktails,
-					aspectsDirectory, MocktailMode.RECORDING_MODE);
+			if (mode.equalsIgnoreCase(MocktailMode.RECORDING_MODE.getModeDirectory())) {
+				MocktailAspectsCreator.ASPECTS_CREATOR.createAspects(mocktails,
+						aspectsDirectory, MocktailMode.RECORDING_MODE);
+			} else {
+				MocktailAspectsCreator.ASPECTS_CREATOR.createAspects(mocktails,
+						aspectsDirectory, MocktailMode.PLAYBACK_MODE);
+			}
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
