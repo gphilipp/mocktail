@@ -29,12 +29,13 @@ import org.mocktail.xml.domain.Mocktail;
 import org.mocktail.xml.domain.MocktailMode;
 import org.mocktail.xml.reader.XStreamMocktailXmlReader;
 
+// *TODO: Chaning phase from process-classes to validate to just make sure that aspects generation happends after this mojo execution
 /**
  * Goal which touches a timestamp file.
  * 
  * @goal mocktail
  * 
- * @phase process-classes
+ * @phase validate
  */
 public class MocktailMojo extends AjcCompileMojo {
 	/**
@@ -68,6 +69,9 @@ public class MocktailMojo extends AjcCompileMojo {
 			List<Mocktail> mocktails = configReader.readXml(new FileInputStream(
 					configuration));
 			System.out.println("\n\n " + mocktails + "\n\n");
+			//TODO:A hack for time being as we will be either generating recording/playback aspects at a time
+			/*MocktailAspectsCreator.ASPECTS_CREATOR.createAspects(mocktails,
+					aspectsDirectory, MocktailMode.RECORDING_MODE);*/
 			MocktailAspectsCreator.ASPECTS_CREATOR.createAspects(mocktails,
 					aspectsDirectory, MocktailMode.RECORDING_MODE);
 
@@ -76,7 +80,8 @@ public class MocktailMojo extends AjcCompileMojo {
 		}
 		System.out.println("Generated aspect files at "
 				+ aspectsDirectory.getAbsolutePath());
-		AjcCompileMojo ajcCompileMojo = new AjcCompileMojo();
+		//TODO: Commented out for time being need to read about how to extend a plugin as we can't set the property of the plugin
+		/*AjcCompileMojo ajcCompileMojo = new AjcCompileMojo();
 		Class<?> superclass = ajcCompileMojo.getClass().getSuperclass();
 		setValue(superclass, ajcCompileMojo, "source", source);
 		setValue(superclass, ajcCompileMojo, "target", target);
@@ -91,7 +96,7 @@ public class MocktailMojo extends AjcCompileMojo {
 		//TODO: Needs to be fixed| Throwing exception right now
 //		ajcCompileMojo.execute();
 		System.out.println("************************************");
-		System.out.println("************************************");
+		System.out.println("************************************");*/
 
 	}
 
