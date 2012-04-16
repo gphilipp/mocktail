@@ -38,89 +38,93 @@ import org.mocktail.xml.reader.XStreamMocktailXmlReader;
  * @phase validate
  */
 public class MocktailMojo extends AjcCompileMojo {
-	/**
-	 * @parameter expression=�${aspectsDirectory}�
-	 *            default-value="${target}/generated/aspects"
-	 * @required
-	 */
-	private File aspectsDirectory;
+    /**
+     * @parameter expression=�${aspectsDirectory}�
+     *            default-value="${target}/generated/aspects"
+     * @required
+     */
+    private File aspectsDirectory;
 
-	/**
-	 * @parameter expression=�${mocktailconfig}� default-value="mocktail.xml"
-	 * @required
-	 */
-	private File configuration;
+    /**
+     * @parameter expression=�${mocktailconfig}� default-value="mocktail.xml"
+     * @required
+     */
+    private File configuration;
 
-	/**
-	 * @parameter expression=�${recordingDir}� default-value="src/recording"
-	 * @required
-	 */
-	private File recordingDir;
-	
-	/**
-	 * @parameter expression=�${mode}�
-	 *            default-value="recording"
-	 * @required
-	 */
-	private String mode;
+    /**
+     * @parameter expression=�${recordingDir}� default-value="src/recording"
+     * @required
+     */
+    private File recordingDir;
 
-	public void execute() throws MojoExecutionException {
+    /**
+     * @parameter expression=�${mode}� default-value="recording"
+     * @required
+     */
+    private String mode;
 
-		System.out.println("Executing the mocktail mojo");
-		if (!aspectsDirectory.exists()) {
-			aspectsDirectory.mkdirs();
-		}
-		XStreamMocktailXmlReader configReader = new XStreamMocktailXmlReader();
-		MocktailContainer.initializeContainer(recordingDir.getAbsolutePath());
-		try {
-			List<Mocktail> mocktails = configReader.readXml(new FileInputStream(
-					configuration));
-			System.out.println("\n\n " + mocktails + "\n\n");
-			//TODO:A hack for time being as we will be either generating recording/playback aspects at a time
-			if (mode.equalsIgnoreCase(MocktailMode.RECORDING_MODE.getModeDirectory())) {
-				MocktailAspectsCreator.ASPECTS_CREATOR.createAspects(mocktails,
-						aspectsDirectory, MocktailMode.RECORDING_MODE);
-			} else {
-				MocktailAspectsCreator.ASPECTS_CREATOR.createAspects(mocktails,
-						aspectsDirectory, MocktailMode.PLAYBACK_MODE);
-			}
+    public void execute() throws MojoExecutionException {
 
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		System.out.println("Generated aspect files at "
-				+ aspectsDirectory.getAbsolutePath());
-		//TODO: Commented out for time being need to read about how to extend a plugin as we can't set the property of the plugin
-		/*AjcCompileMojo ajcCompileMojo = new AjcCompileMojo();
-		Class<?> superclass = ajcCompileMojo.getClass().getSuperclass();
-		setValue(superclass, ajcCompileMojo, "source", source);
-		setValue(superclass, ajcCompileMojo, "target", target);
-		setValue(superclass, ajcCompileMojo, "aspectDirectory",
-				aspectsDirectory.getAbsolutePath());
-		setValue(superclass.getSuperclass(), ajcCompileMojo, "project", project);
-		setValue(superclass.getSuperclass(), ajcCompileMojo, "basedir", basedir);
+        System.out.println("Executing the mocktail mojo");
+        if (!aspectsDirectory.exists()) {
+            aspectsDirectory.mkdirs();
+        }
+        XStreamMocktailXmlReader configReader = new XStreamMocktailXmlReader();
+        MocktailContainer.initializeContainer(recordingDir.getAbsolutePath());
+        try {
+            List<Mocktail> mocktails = configReader
+                    .readXml(new FileInputStream(configuration));
+            System.out.println("\n\n " + mocktails + "\n\n");
+            // TODO:A hack for time being as we will be either generating
+            // recording/playback aspects at a time
+            if (mode.equalsIgnoreCase(MocktailMode.RECORDING_MODE
+                    .getModeDirectory())) {
+                MocktailAspectsCreator.ASPECTS_CREATOR.createAspects(mocktails,
+                        aspectsDirectory, MocktailMode.RECORDING_MODE);
+            } else {
+                MocktailAspectsCreator.ASPECTS_CREATOR.createAspects(mocktails,
+                        aspectsDirectory, MocktailMode.PLAYBACK_MODE);
+            }
 
-		System.out.println("************************************");
-		System.out.println("************************************");
-		System.out.println("Executing ajc mojo");
-		//TODO: Needs to be fixed| Throwing exception right now
-//		ajcCompileMojo.execute();
-		System.out.println("************************************");
-		System.out.println("************************************");*/
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Generated aspect files at "
+                + aspectsDirectory.getAbsolutePath());
+        // TODO: Commented out for time being need to read about how to extend a
+        // plugin as we can't set the property of the plugin
+        /*
+         * AjcCompileMojo ajcCompileMojo = new AjcCompileMojo(); Class<?>
+         * superclass = ajcCompileMojo.getClass().getSuperclass();
+         * setValue(superclass, ajcCompileMojo, "source", source);
+         * setValue(superclass, ajcCompileMojo, "target", target);
+         * setValue(superclass, ajcCompileMojo, "aspectDirectory",
+         * aspectsDirectory.getAbsolutePath());
+         * setValue(superclass.getSuperclass(), ajcCompileMojo, "project",
+         * project); setValue(superclass.getSuperclass(), ajcCompileMojo,
+         * "basedir", basedir);
+         * 
+         * System.out.println("************************************");
+         * System.out.println("************************************");
+         * System.out.println("Executing ajc mojo"); //TODO: Needs to be fixed|
+         * Throwing exception right now // ajcCompileMojo.execute();
+         * System.out.println("************************************");
+         * System.out.println("************************************");
+         */
 
-	}
+    }
 
-	@SuppressWarnings("rawtypes")
-	public void setValue(Class classToBeSetOn, Object o, String fieldName,
-			Object value) throws RuntimeException {
-		Field field;
-		try {
-			field = classToBeSetOn.getDeclaredField(fieldName);
-			field.setAccessible(true);
-			field.set(o, value);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new RuntimeException(e.getMessage());
-		}
-	}
+    @SuppressWarnings("rawtypes")
+    public void setValue(Class classToBeSetOn, Object o, String fieldName,
+            Object value) throws RuntimeException {
+        Field field;
+        try {
+            field = classToBeSetOn.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            field.set(o, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
+        }
+    }
 }
