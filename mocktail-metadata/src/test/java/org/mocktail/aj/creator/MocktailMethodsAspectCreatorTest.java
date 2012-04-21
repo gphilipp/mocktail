@@ -5,13 +5,11 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mocktail.MocktailContainer;
-import org.mocktail.MocktailContext;
 import org.mocktail.MocktailObjectMother;
 import org.mocktail.xml.domain.Mocktail;
 import org.mocktail.xml.domain.MocktailMode;
@@ -24,9 +22,9 @@ public class MocktailMethodsAspectCreatorTest {
 
     @Before
     public void setup() {
-        MocktailContainer.initializeContainer("");
-        MocktailContext mocktailContext = MocktailContext.getMocktailContext();
-        DirectFieldAccessor dfa = new DirectFieldAccessor(mocktailContext);
+        MocktailContainer mocktailContainer = MocktailContainer.getInstance();
+        mocktailContainer.clean();
+        DirectFieldAccessor dfa = new DirectFieldAccessor(mocktailContainer);
         // Need to set as Mocktail Context is a singleton class and is getting
         // set-upped from multiple places
         dfa.setPropertyValue("recordingDirectory", "root_dir");
@@ -40,8 +38,7 @@ public class MocktailMethodsAspectCreatorTest {
         new MocktailMethodsAspectCreator(MocktailMode.RECORDING_MODE) {
             @Override
             protected void createAspectFile(Mocktail mocktail, String fileName,
-                    File directory, String templatedMethodObjectString)
-                    throws IOException {
+                    File directory, String templatedMethodObjectString){
                 assertThat(fileName,
                         is("RecorderAspect" + methodMocktail.getClassName()));
                 assertThat(templatedMethodObjectString,
@@ -70,8 +67,7 @@ public class MocktailMethodsAspectCreatorTest {
         new MocktailMethodsAspectCreator(MocktailMode.PLAYBACK_MODE) {
             @Override
             protected void createAspectFile(Mocktail mocktail, String fileName,
-                    File directory, String templatedMethodObjectString)
-                    throws IOException {
+                    File directory, String templatedMethodObjectString) {
                 assertThat(fileName,
                         is("PlaybackAspect" + methodMocktail.getClassName()));
                 assertThat(templatedMethodObjectString,

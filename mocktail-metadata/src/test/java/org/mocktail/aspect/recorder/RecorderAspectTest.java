@@ -19,8 +19,8 @@ public class RecorderAspectTest {
 
     @Before
     public void setup() {
-        MocktailContainer.initializeContainer("");
-        dfa = new DirectFieldAccessor(MocktailContainer.getMocktailContext());
+        MocktailContainer.getInstance().clean();
+        dfa = new DirectFieldAccessor(MocktailContainer.getInstance());
     }
 
     @Test(expected = AssertionFailedError.class)

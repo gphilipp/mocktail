@@ -5,13 +5,11 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mocktail.MocktailContainer;
-import org.mocktail.MocktailContext;
 import org.mocktail.MocktailObjectMother;
 import org.mocktail.xml.domain.Mocktail;
 import org.mocktail.xml.domain.MocktailMode;
@@ -24,9 +22,9 @@ public class MocktailClassAspectCreatorTest {
 
     @Before
     public void setup() {
-        MocktailContainer.initializeContainer("");
-        MocktailContext mocktailContext = MocktailContext.getMocktailContext();
-        DirectFieldAccessor dfa = new DirectFieldAccessor(mocktailContext);
+        MocktailContainer mocktailContainer = MocktailContainer.getInstance();
+        mocktailContainer.clean();
+        DirectFieldAccessor dfa = new DirectFieldAccessor(mocktailContainer);
         // Need to set as Mocktail Context is a singleton class and is getting
         // set-upped from multiple places
         dfa.setPropertyValue("recordingDirectory", "root_dir");
@@ -42,7 +40,7 @@ public class MocktailClassAspectCreatorTest {
             @Override
             protected void createAspectFile(Mocktail mocktail,
                     String aspectFileName, File aspectsRootDirecotry,
-                    String templatedClassObjectString) throws IOException {
+                    String templatedClassObjectString){
                 assertThat(aspectFileName,
                         is("RecorderAspect" + classMocktail.getClassName()));
                 assertThat(
@@ -71,8 +69,7 @@ public class MocktailClassAspectCreatorTest {
         new MocktailClassAspectCreator(MocktailMode.RECORDING_MODE) {
             @Override
             protected void createAspectFile(Mocktail mocktail, String fileName,
-                    File directory, String templatedClassObjectString)
-                    throws IOException {
+                    File directory, String templatedClassObjectString) {
                 assertThat(fileName,
                         is("RecorderAspect" + classMocktail.getClassName()));
                 assertThat(templatedClassObjectString,
@@ -97,8 +94,7 @@ public class MocktailClassAspectCreatorTest {
         new MocktailClassAspectCreator(MocktailMode.PLAYBACK_MODE) {
             @Override
             protected void createAspectFile(Mocktail mocktail, String fileName,
-                    File directory, String templatedClassObjectString)
-                    throws IOException {
+                    File directory, String templatedClassObjectString) {
                 System.out.println(templatedClassObjectString);
                 assertThat(fileName,
                         is("PlaybackAspect" + classMocktail.getClassName()));
@@ -127,8 +123,7 @@ public class MocktailClassAspectCreatorTest {
         new MocktailClassAspectCreator(MocktailMode.PLAYBACK_MODE) {
             @Override
             protected void createAspectFile(Mocktail mocktail, String fileName,
-                    File directory, String templatedClassObjectString)
-                    throws IOException {
+                    File directory, String templatedClassObjectString){
                 assertThat(fileName,
                         is("PlaybackAspect" + classMocktail.getClassName()));
                 assertThat(templatedClassObjectString,
