@@ -183,6 +183,4 @@ public class MocktailTemplateProcesserTest {
                 containsString("pointcut callPointcut() : call(* com.sandy.AspectedClass.*(..));"));
         System.out.println(templatedClassObjectString);
     }
-    
- 
 }
