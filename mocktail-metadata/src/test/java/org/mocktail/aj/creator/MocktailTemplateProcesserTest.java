@@ -177,7 +177,7 @@ public class MocktailTemplateProcesserTest {
         assertThat(templatedClassObjectString,
                 containsString("String fqcn = \"com.sandy.AspectedClass\";"));
         assertThat(templatedClassObjectString,
-                containsString("recordingDirectoryPath = \"root_dir\";"));
+                containsString("recordingDirectoryPath = \"root_dir\""));
         assertThat(
                 templatedClassObjectString,
                 containsString("pointcut callPointcut() : call(* com.sandy.AspectedClass.*(..));"));
