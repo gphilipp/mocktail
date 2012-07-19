@@ -75,6 +75,70 @@ public class UserDaoTest {
         
         assertEquals(2, count);
     }
+	
+	@Test
+    public void testUpdateUser() {
+        int count = getNumRows();
+        
+        assertEquals(1, count);
+        UserDetail userDetail = new UserDetail();
+        userDetail.setAge(30);
+        userDetail.setId(1);
+
+        //insert the row in recording mode
+        userDao.update(userDetail);
+        
+        ResultSet resultSet = jdbcExecutor.getResultSet("select age from userdetail where id=1");
+        assertAge(resultSet, 30);
+        
+        
+        userDetail.setAge(40);
+        userDetail.setId(1);
+        userDao.update(userDetail);
+        
+        assertAge(resultSet, 30);
+    }
+
+    private void assertAge(ResultSet resultSet, int ageParam) {
+        try {
+            while(resultSet.next()){
+                int age = resultSet.getInt(1);
+                assertEquals(ageParam, age);
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+	
+	@Test
+    public void testDeleteUser() {
+        int count = getNumRows();
+        
+        assertEquals(1, count);
+        jdbcExecutor.execute("insert into USERDETAIL values (2,20)");
+        
+        count = getNumRows();
+        
+        assertEquals(2, count);
+
+        UserDetail userDetail = new UserDetail();
+        userDetail.setId(2);
+        //insert the row in recording mode
+        userDao.delete(userDetail);
+        
+        count = getNumRows();
+        
+        assertEquals(1, count);
+        
+        userDetail.setId(1);
+        
+        userDao.delete(userDetail);
+        
+        count = getNumRows();
+        
+        assertEquals(1, count);
+    }
 
     private int getNumRows() {
         ResultSet resultSet = jdbcExecutor.executeQueryResultSet("select count(*) from userdetail");
