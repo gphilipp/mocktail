@@ -61,7 +61,7 @@ public class MocktailTemplateProcesser {
         return contextMap;
     }
     
-    protected InputStream getAspectTemplate(AspectType aspectType, MocktailMode mocktailMode) {
+    private InputStream getAspectTemplate(AspectType aspectType, MocktailMode mocktailMode) {
         StringBuffer aspectTemplatePath = new StringBuffer(
                 "org/mocktail/aj/creator/");
         aspectTemplatePath.append(aspectType.getAspectTypeDirectory()).append(
@@ -75,7 +75,7 @@ public class MocktailTemplateProcesser {
     /**
      * I'll create aspect in the the aspect directory
      */
-    protected void createAspectFile(Mocktail classObj, String aspectFileName,
+    private void createAspectFile(Mocktail classObj, String aspectFileName,
             File aspectsRootDirecotry, String templatedObjectString) {
         File aspectFileDirectory = new File(aspectsRootDirecotry,
                 getAspectDirectory(classObj));
@@ -93,7 +93,7 @@ public class MocktailTemplateProcesser {
         }
     }
     
-    protected String getAspectDirectory(Mocktail mocktail) {
+    private String getAspectDirectory(Mocktail mocktail) {
         String packagePath = "";
         if (null != mocktail.getClassPackageName()) {
             packagePath = mocktail.getClassPackageName().replace(".",
@@ -109,7 +109,7 @@ public class MocktailTemplateProcesser {
         createAspectFile(mocktail, getAspectFileName(mocktail, mocktailMode), aspectsRootDirectory, templateString);
     }
     
-    protected String getAspectFileName(Mocktail mocktail, MocktailMode mocktailMode) {
+    private String getAspectFileName(Mocktail mocktail, MocktailMode mocktailMode) {
         return mocktailMode.getFilePrefixForMode() + "Aspect"
                 + mocktail.getClassName();
     }
