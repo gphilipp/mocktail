@@ -16,6 +16,7 @@ import org.hsqldb.jdbcDriver;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mocktail.MethodMocktail;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -48,6 +49,7 @@ public class UserDaoTest {
 
     @Test
     public void testGetUser() {
+        System.out.println("Inside testGetUser");
 
         // search with recording mode
         UserDetail userDetail = userDao.get(1L);
@@ -64,6 +66,7 @@ public class UserDaoTest {
 
     @Test
     public void testInsertUser() {
+        System.out.println("Inside testInsertUser");
         int count = getNumRows();
 
         assertEquals(1, count);
@@ -88,6 +91,7 @@ public class UserDaoTest {
 
     @Test
     public void testUpdateUser() {
+        System.out.println("Inside testUpdateUser");
         int count = getNumRows();
 
         assertEquals(1, count);
@@ -115,6 +119,7 @@ public class UserDaoTest {
 
     @Test
     public void testDeleteUser() {
+        System.out.println("Inside testDeleteUser");
         int count = getNumRows();
 
         assertEquals(1, count);
@@ -144,6 +149,7 @@ public class UserDaoTest {
 
     @Test
     public void testMethodBasedRecording() {
+        System.out.println("Inside testMethodBasedRecording");
         @Cleanup MethodMocktail methodMocktail = new MethodMocktail();
         methodMocktail.setUp(this);
         
