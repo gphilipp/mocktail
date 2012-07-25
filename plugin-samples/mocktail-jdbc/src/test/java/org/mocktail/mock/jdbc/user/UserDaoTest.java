@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.sql.Driver;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -146,20 +147,20 @@ public class UserDaoTest {
         @Cleanup MethodMocktail methodMocktail = new MethodMocktail();
         methodMocktail.setUp(this);
         
-        UserDetail userDetail = userDao.get(1L);
-        assertNotNull(userDetail);
-        assertThat(10, is(userDetail.getAge()));
+        //get all records, insert another one, get all records again. should be n+1
+        
+        List<UserDetail> userDetails = userDao.getAll();
+        assertThat(1, is(userDetails.size()));
 
-        userDetail = new UserDetail();
-        userDetail.setAge(20);
-        userDetail.setId(2);
+        UserDetail newUserDetail = new UserDetail();
+        newUserDetail.setAge(20);
+        newUserDetail.setId(2);
 
         // insert the row in recording mode
-        userDao.save(userDetail);
+        userDao.save(newUserDetail);
 
-        userDetail = userDao.get(1L);
-        assertNotNull(userDetail);
-        assertThat(10, is(userDetail.getAge()));
+        userDetails = userDao.getAll();
+        assertThat(2, is(userDetails.size()));
     }
     
     private int getNumRows() {
