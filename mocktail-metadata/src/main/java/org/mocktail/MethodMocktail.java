@@ -2,6 +2,8 @@ package org.mocktail;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.mocktail.repository.ObjectRepository;
 
@@ -11,6 +13,8 @@ public class MethodMocktail implements Serializable{
     private static final String NOT_AVAIL = "?";
 
     MocktailContainer container = MocktailContainer.getInstance();
+    
+    Map<String, Integer> methodCallsMap = new HashMap<String, Integer>();
 
     private String methodName;
 
@@ -38,11 +42,18 @@ public class MethodMocktail implements Serializable{
         System.out.println(methodName);
     }
 
+
+
     public void close() {
         container.resetMethodMocktail();
         if(!serializedObjectExistsOnDisk()){
             saveSerializedIndicatorOnDisk();
         }
+        System.out.println("Calling MethodMocktail.close() method");
+    }
+    
+    public boolean isPlaybackMode(){
+        return serializedObjectExistsOnDisk();
     }
     
     private boolean serializedObjectExistsOnDisk() {
@@ -62,7 +73,7 @@ public class MethodMocktail implements Serializable{
         String recordingFileName = methodName;
         
         ObjectRepository objectRepository = MocktailContainer.getInstance().getObjectRepository();
-        objectRepository.saveObject(this, recordingFileName,
+        objectRepository.saveObject(methodName, recordingFileName,
                 recordingDirectoryPath);
     }
 
@@ -92,5 +103,22 @@ public class MethodMocktail implements Serializable{
 
     public String getRecordingDirectoryPath() {
         return recordingDirectoryPath;
+    }
+    
+    public void registerWithMethodCallsMap(String key) {
+        if(methodCallsMap.containsKey(key)){
+            Integer numberOfCalls = methodCallsMap.get(key);
+            numberOfCalls = new Integer(numberOfCalls.intValue()+1);
+            methodCallsMap.put(key, numberOfCalls);
+        } else{
+            methodCallsMap.put(key, new Integer(1));
+        }
+    }
+    
+    public int getMethodCalls(String key) {
+        if(methodCallsMap.containsKey(key)){
+            return methodCallsMap.get(key).intValue();
+        }
+        return 0;
     }
 }

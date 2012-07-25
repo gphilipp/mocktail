@@ -34,12 +34,31 @@ public aspect RecorderAspect$className {
 			Object objectToBeRecorded = null;
 			
 			if(methodMocktail != null){
+			    methodMocktail.setRecordingBasePath(recordingBasePath);
 			    String methodMocktailPath = recordingBasePath + fileSeparator + methodMocktail.getFqcn().replaceAll("\\.", fileSeparator) + fileSeparator+methodMocktail.getMethodName();
+			    //check if it's recording mode or playback mode
+			    
+			    boolean recordingMode = !(methodMocktail.isPlaybackMode());
+			    String originalRecordingFileName = recordingFileName;
+			    if(methodMocktail.getMethodCalls(originalRecordingFileName) > 0){
+			        recordingFileName = recordingFileName + "_" + methodMocktail.getMethodCalls(originalRecordingFileName);
+			    }
+			    
+			    boolean objectExistsInRepository = objectRepository.objectAlreadyExist(recordingFileName , methodMocktailPath);
+			    System.out.println("the recording file name is:"+recordingFileName + " and methodMocktailPath is:"+methodMocktailPath+"> object exists?"+objectExistsInRepository+":recordingMode?"+ recordingMode);
+			    
 
-			    if(objectRepository.objectAlreadyExist(recordingFileName,
-			    		methodMocktailPath)){
-			        System.out.println("MethodMocktail - object already exists so not saving it:"+recordingFileName+":"+methodMocktailPath);
-			        objectToBeRecorded = objectRepository.getObject(recordingFileName, methodMocktailPath);
+			    if(recordingMode && objectExistsInRepository){
+			        //save it again
+			        //get the name of the recordingFile
+			        System.out.println("MethodMocktail - Recording not already in place so doing the recording:"+recordingFileName+":"+methodMocktailPath);
+			        
+			        objectToBeRecorded = proceed();
+				    objectRepository.saveObject(objectToBeRecorded, recordingFileName,
+				    		methodMocktailPath);
+                } else if(objectExistsInRepository){
+                	System.out.println("MethodMocktail - object already exists so not saving it:"+recordingFileName+":"+methodMocktailPath);
+			        objectToBeRecorded = objectRepository.getObject(recordingFileName, methodMocktailPath);		   
 			    } else {
 				    // Ask Recorder to save the recording file
 				    System.out.println("MethodMocktail - Recording not already in place so doing the recording:"+recordingFileName+":"+methodMocktailPath);
@@ -52,6 +71,8 @@ public aspect RecorderAspect$className {
 				    objectRepository.saveObject(objectToBeRecorded, recordingFileName,
 				    		methodMocktailPath);
 			    }
+			    
+			    methodMocktail.registerWithMethodCallsMap(originalRecordingFileName);
 			} else {
 			
 			    String recordingDirectoryPath = recordingBasePath + fileSeparator + fqcn.replaceAll("\\.", fileSeparator);

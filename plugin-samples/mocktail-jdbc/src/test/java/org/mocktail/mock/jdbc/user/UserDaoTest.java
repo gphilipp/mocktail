@@ -161,6 +161,7 @@ public class UserDaoTest {
 
         userDetails = userDao.getAll();
         assertThat(2, is(userDetails.size()));
+        methodMocktail.close();
     }
     
     private int getNumRows() {
