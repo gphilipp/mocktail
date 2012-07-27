@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -108,6 +109,7 @@ public class MocktailTemplateProcesserTest {
     }
 
     @Test
+    @Ignore
     public void shouldCreateRecordingMethodAspects() throws Exception {
         setupMocktailContainer();
         final Mocktail methodMocktail = MocktailObjectMother
