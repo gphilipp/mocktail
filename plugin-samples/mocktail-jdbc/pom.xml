@@ -14,6 +14,34 @@
   <build>
     <plugins>
       <plugin>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok-maven-plugin</artifactId>
+        <version>0.11.2.1-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <id>delombok</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>delombok</goal>
+            </goals>
+            <configuration>
+              <verbose>true</verbose>
+        
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-delombok</id>
+            <phase>generate-test-sources</phase>
+            <goals>
+              <goal>testDelombok</goal>
+            </goals>
+            <configuration>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>aspectj-maven-plugin</artifactId>
         <version>1.4</version>
@@ -118,4 +146,28 @@
       <url>http://repository.codehaus.org/</url>
     </repository>
   </repositories>
+  <profiles>
+    <profile>
+      <id>windows_profile</id>
+      <activation>
+        <os>
+          <family>Windows</family>
+        </os>
+      </activation>
+      <properties>
+        <toolsjar>${java.home}/../lib/tools.jar</toolsjar>
+      </properties>
+    </profile>
+    <profile>
+      <id>osx_profile</id>
+      <activation>
+        <os>
+          <family>mac</family>
+        </os>
+      </activation>
+      <properties>
+        <toolsjar>${java.home}/../Classes/classes.jar</toolsjar>
+      </properties>
+    </profile>
+  </profiles>
 </project>
