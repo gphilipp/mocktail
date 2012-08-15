@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import lombok.Cleanup;
 
 import org.hsqldb.jdbcDriver;
 import org.junit.After;
@@ -147,7 +146,7 @@ public class UserDaoTest {
     @Test
     public void testMethodBasedRecording() {
         System.out.println("Inside testMethodBasedRecording");
-        @Cleanup MethodMocktail methodMocktail = new MethodMocktail();
+        MethodMocktail methodMocktail = new MethodMocktail();
         methodMocktail.setUp(this);
         
         //get all records, insert another one, get all records again. should be n+1
