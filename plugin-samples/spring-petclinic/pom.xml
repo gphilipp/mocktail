@@ -229,6 +229,12 @@
 			<artifactId>selenium-java</artifactId>
 			<version>2.25.0</version>
 		</dependency>
+		<!-- Mocktail dependency -->
+		<dependency>
+			<groupId>org.mocktail</groupId>
+			<artifactId>mocktail-metadata</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
@@ -269,6 +275,46 @@
 					</webAppConfig>
 				</configuration>
 			</plugin>
+			<!-- Plugins for Mocktail -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>1.4</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>       <!-- use this goal to weave all your main classes -->
+							<goal>test-compile</goal>       <!-- use this goal to weave all your main classes -->
+						</goals>
+						<configuration>
+							<source>1.6</source>
+							<target>1.6</target>
+							<aspectDirectory>target/generated/aspects</aspectDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>mocktail-maven-plugin</artifactId>
+				<groupId>org.mocktail</groupId>
+				<version>0.0.1-SNAPSHOT</version>
+				<configuration>
+					<aspectsDirectory>target/generated/aspects</aspectsDirectory>
+					<configuration>src/test/resources/mocktail.xml</configuration>
+					<recordingDir>target/generated/recordings</recordingDir>
+					<mode>recording</mode>
+				</configuration>
+				<executions>
+					<execution>
+						<id>mocktail</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>mocktail</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Plugins for Mocktail -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
