@@ -98,11 +98,8 @@
 			<scope>runtime</scope>
 		</dependency>
 		<!-- MySQL JDBC Connector -->
-		<!--
-			<dependency> <groupId>com.mysql.jdbc</groupId>
-			<artifactId>com.springsource.com.mysql.jdbc</artifactId>
-			<version>5.1.6</version> </dependency>
-		-->
+		<!-- <dependency> <groupId>com.mysql.jdbc</groupId> <artifactId>com.springsource.com.mysql.jdbc</artifactId> 
+			<version>5.1.6</version> </dependency> -->
 
 		<!-- Hibernate -->
 		<dependency>
@@ -193,12 +190,12 @@
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
-    		<groupId>org.jdom</groupId>
-    		<artifactId>com.springsource.org.jdom</artifactId>
-    		<version>1.1.0</version>
-    		<scope>runtime</scope>
+			<groupId>org.jdom</groupId>
+			<artifactId>com.springsource.org.jdom</artifactId>
+			<version>1.1.0</version>
+			<scope>runtime</scope>
 		</dependency>
-				
+
 		<!-- JAXB -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
@@ -226,7 +223,12 @@
 			<version>1.1.0</version>
 			<scope>test</scope>
 		</dependency>
-
+		<!-- Selenium dependency -->
+		<dependency> <!-- http://seleniumhq.org/download/maven.html -->
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<version>2.25.0</version>
+		</dependency>
 	</dependencies>
 	<repositories>
 		<repository>
@@ -253,20 +255,20 @@
 	<build>
 		<plugins>
 			<plugin>
-			        <groupId>org.codehaus.mojo</groupId>
-			        <artifactId>tomcat-maven-plugin</artifactId>
-			        <version>1.1</version>
-			      </plugin>
-			      <plugin>
-			        <groupId>org.mortbay.jetty</groupId>
-			        <artifactId>jetty-maven-plugin</artifactId>
-			        <version>8.0.1.v20110908</version>
-			        <configuration>
-			          <webAppConfig>
-			            <contextPath>/${project.name}</contextPath>
-			          </webAppConfig>
-			        </configuration>
-			      </plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>tomcat-maven-plugin</artifactId>
+				<version>1.1</version>
+			</plugin>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>8.0.1.v20110908</version>
+				<configuration>
+					<webAppConfig>
+						<contextPath>/${project.name}</contextPath>
+					</webAppConfig>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -300,9 +302,7 @@
 					<execution>
 						<id>install</id>
 						<phase>install</phase>
-						<!--goals>
-							<goal>sources</goal>
-						</goals-->
+						<!--goals> <goal>sources</goal> </goals -->
 					</execution>
 				</executions>
 			</plugin>
