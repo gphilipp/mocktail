@@ -1,16 +1,18 @@
 package org.mocktail.mock.jdbc.user;
 
 import static junit.framework.Assert.assertEquals;
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.sql.Driver;
+import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.sql.DataSource;
-
 
 import org.hsqldb.jdbcDriver;
 import org.junit.After;
@@ -19,6 +21,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mocktail.MethodMocktail;
+import org.mocktail.MocktailContainer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
@@ -50,8 +53,6 @@ public class UserDaoTest {
     @Test
     public void testGetUser() {
         
-        System.out.println("Inside testGetUser");
-
         // search with recording mode
         UserDetail userDetail = userDao.get(1L);
         assertNotNull(userDetail);
@@ -80,6 +81,7 @@ public class UserDaoTest {
         // insert the row in recording mode
         userDao.save(userDetail);
     }
+ 
 
     @Test
     @Ignore
