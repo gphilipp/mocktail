@@ -126,6 +126,8 @@ public class SimpleJdbcClinic implements Clinic, SimpleJdbcClinicMBean {
 
 	@Transactional(readOnly = true)
 	public Collection<Vet> getVets() throws DataAccessException {
+	    System.out.println("INSIDE GETVETS");
+	    System.out.println("**************");
 		synchronized (this.vets) {
 			if (this.vets.isEmpty()) {
 				refreshVetsCache();
