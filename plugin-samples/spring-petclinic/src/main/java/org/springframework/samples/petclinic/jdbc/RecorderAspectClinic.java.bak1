@@ -1,4 +1,4 @@
-package $packageName;
+package org.springframework.samples.petclinic.jdbc;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -13,7 +13,7 @@ import org.mocktail.repository.ObjectRepository;
 import org.mocktail.util.UniqueIdGenerator;
 
 @Aspect
-public class RecorderAspect$className {
+public class RecorderAspectClinic {
     
     private MocktailContainer mocktailContainer;
     private ObjectRepository objectRepository;
@@ -23,29 +23,24 @@ public class RecorderAspect$className {
     private String recordingBasePath;
     private String methodName;
 
-    public RecorderAspect$className(){
+    public RecorderAspectClinic(){
         mocktailContainer = MocktailContainer.getInstance();
 
         objectRepository = mocktailContainer
                 .getObjectRepository();
         uniqueIdGenerator = mocktailContainer
                 .getUniqueIdGenerator();
-        fqcn = "$fqcn";
+        fqcn = "org.springframework.samples.petclinic.jdbc.Clinic";
 
         fileSeparator = "/";
-        recordingBasePath = "$recordingDirectory";
+        recordingBasePath = "/Users/shrikant/code/github/mocktail/plugin-samples/spring-petclinic/target/generated/recordings";
     }
 
-	#foreach($method in $methods)
-	#if ($targetImpl) 
-	@Around("execution(* $fqcn.$method(..)) && target($targetImpl)")
-	#else
-	@Around("execution(* $fqcn.$method(..))")
-	#end
-    public Object advice$method(ProceedingJoinPoint pjp) throws Throwable {
-        String recordingFileName = uniqueIdGenerator.getUniqueId("$method",
+			@Around("execution(* org.springframework.samples.petclinic.jdbc.Clinic.getVets(..)) && target(org.springframework.samples.petclinic.jdbc.JdbcClinic)")
+	    public Object advice(ProceedingJoinPoint pjp) throws Throwable {
+        String recordingFileName = uniqueIdGenerator.getUniqueId("getVets",
                 pjp.getArgs()) + "";
-        String methodName = "$method";
+        String methodName = "getVets";
         
         boolean voidReturnType = isVoidReturnType(pjp);
         System.out.println("EXECUTING ASPECT NOW");
@@ -63,8 +58,7 @@ public class RecorderAspect$className {
 
         return objectToBeRecorded;
     }
-    #end
-
+    
     private boolean isVoidReturnType(ProceedingJoinPoint pjp) {
         Method method = ((MethodSignature) pjp.getSignature()).getMethod();
         boolean voidReturnType = false;

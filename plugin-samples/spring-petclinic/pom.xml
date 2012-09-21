@@ -127,6 +127,7 @@
       <artifactId>com.springsource.oracle.toplink.essentials</artifactId>
       <version>2.0.0.b41-beta2</version>
     </dependency>
+
     <!-- Hibernate JPA Provider -->
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -231,7 +232,11 @@
       <version>1.1.0</version>
       <scope>test</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.mocktail</groupId>
+      <artifactId>mocktail-metadata</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
   <repositories>
     <repository>
@@ -402,12 +407,12 @@
               </execution>
             </executions>
           </plugin>
-          <!--plugin>
+          <plugin>
             <artifactId>mocktail-maven-plugin</artifactId>
             <groupId>org.mocktail</groupId>
             <version>0.0.1-SNAPSHOT</version>
             <configuration>
-              <aspectsDirectory>target/generated/aspects</aspectsDirectory>
+              <aspectsDirectory>src/main/generated</aspectsDirectory>
               <configuration>src/test/resources/mocktail.xml</configuration>
               <recordingDir>target/generated/recordings</recordingDir>
               <mode>recording</mode>
@@ -421,7 +426,7 @@
                 </goals>
               </execution>
             </executions>
-          </plugin-->
+          </plugin>
           <plugin>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>aspectj-maven-plugin</artifactId>
@@ -430,11 +435,29 @@
               <execution>
                 <goals>
                   <goal>compile</goal>       <!-- use this goal to weave all your main classes -->
-                  </goals>
+                </goals>
                 <configuration>
                   <source>1.6</source>
                   <target>1.6</target>
-                  <!--aspectDirectory>target/generated/aspects</aspectDirectory-->
+                  <!--aspectDirectory>target/generated/aspects</aspectDirectory -->
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>1.7</version>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>add-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>src/main/generated</source>
+                  </sources>
                 </configuration>
               </execution>
             </executions>

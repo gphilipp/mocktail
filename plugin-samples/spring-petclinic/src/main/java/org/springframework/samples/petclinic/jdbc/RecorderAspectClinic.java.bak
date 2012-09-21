@@ -1,4 +1,4 @@
-package $packageName;
+package org.springframework.samples.petclinic.jdbc;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -13,7 +13,7 @@ import org.mocktail.repository.ObjectRepository;
 import org.mocktail.util.UniqueIdGenerator;
 
 @Aspect
-public class RecorderAspect$className {
+public class RecorderAspectClinic {
     
     private MocktailContainer mocktailContainer;
     private ObjectRepository objectRepository;
@@ -23,31 +23,33 @@ public class RecorderAspect$className {
     private String recordingBasePath;
     private String methodName;
 
-    public RecorderAspect$className(){
+    public RecorderAspectClinic(){
         mocktailContainer = MocktailContainer.getInstance();
 
         objectRepository = mocktailContainer
                 .getObjectRepository();
         uniqueIdGenerator = mocktailContainer
                 .getUniqueIdGenerator();
-        fqcn = "$fqcn";
+        fqcn = "org.springframework.samples.petclinic.jdbc.Clinic";
 
         fileSeparator = "/";
-        recordingBasePath = "$recordingDirectory";
+        recordingBasePath = "/Users/shrikant/code/github/mocktail/plugin-samples/spring-petclinic/target/generated/recordings";
+
+        
+        methodName = "getVets";
     }
 
-	#foreach($method in $methods)
-	#if ($targetImpl) 
-	@Around("execution(* $fqcn.$method(..)) && target($targetImpl)")
-	#else
-	@Around("execution(* $fqcn.$method(..))")
-	#end
-    public Object advice$method(ProceedingJoinPoint pjp) throws Throwable {
-        String recordingFileName = uniqueIdGenerator.getUniqueId("$method",
+    @Around("execution(* org.springframework.samples.petclinic.Clinic.getVets(..)) && target(org.springframework.samples.petclinic.jdbc.SimpleJdbcClinic)")
+    public Object advice(ProceedingJoinPoint pjp) throws Throwable {
+
+
+        String recordingFileName = uniqueIdGenerator.getUniqueId(methodName,
                 pjp.getArgs()) + "";
-        String methodName = "$method";
         
         boolean voidReturnType = isVoidReturnType(pjp);
+        
+        
+
         System.out.println("EXECUTING ASPECT NOW");
         System.out.println("++++++++++++++++++++");
         
@@ -55,15 +57,14 @@ public class RecorderAspect$className {
         MethodMocktail methodMocktail = mocktailContainer.getMethodMocktail();
         if (methodMocktail != null) {
             objectToBeRecorded = mocktailForEachTestMethod(pjp,
-                    recordingFileName, voidReturnType, methodMocktail, methodName);
+                    recordingFileName, voidReturnType, methodMocktail);
         } else {
             objectToBeRecorded = mocktailWithSharedData(pjp, recordingFileName,
-                    voidReturnType, methodName);
+                    voidReturnType);
         }
 
         return objectToBeRecorded;
     }
-    #end
 
     private boolean isVoidReturnType(ProceedingJoinPoint pjp) {
         Method method = ((MethodSignature) pjp.getSignature()).getMethod();
@@ -75,7 +76,7 @@ public class RecorderAspect$className {
     }
 
     private Object mocktailWithSharedData(ProceedingJoinPoint pjp,
-            String recordingFileName, boolean voidReturnType, String methodName) throws Throwable {
+            String recordingFileName, boolean voidReturnType) throws Throwable {
         Object objectToBeRecorded;
         String recordingDirectoryPath = recordingBasePath + fileSeparator
                 + fqcn.replaceAll("\\.", fileSeparator);
@@ -110,7 +111,7 @@ public class RecorderAspect$className {
 
     private Object mocktailForEachTestMethod(ProceedingJoinPoint pjp,
             String recordingFileName, boolean voidReturnType,
-            MethodMocktail methodMocktail, String methodName) throws Throwable {
+            MethodMocktail methodMocktail) throws Throwable {
         Object objectToBeRecorded;
         methodMocktail.setRecordingBasePath(recordingBasePath);
         String methodMocktailPath = recordingBasePath + fileSeparator

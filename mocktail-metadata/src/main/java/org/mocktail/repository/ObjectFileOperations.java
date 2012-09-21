@@ -30,12 +30,34 @@ public class ObjectFileOperations {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (null != objectOutputStream)
+            if (null != objectOutputStream){
                 try {
                     objectOutputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }
+        }
+    }
+    
+    public void saveObjectInFile(Object object, String fileName, File parentFolder) {
+        ObjectOutputStream objectOutputStream = null;
+        try {
+            objectOutputStream = new ObjectOutputStream(new FileOutputStream(
+                    new File(parentFolder, fileName)));
+            objectOutputStream.writeObject(object);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (null != objectOutputStream){
+                try {
+                    objectOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
@@ -60,6 +82,30 @@ public class ObjectFileOperations {
         try {
             is = new ObjectInputStream(new FileInputStream(new File(location,
                     objectId)));
+            return is.readObject();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+    
+    public Object getObjectFromFile(String fileName, File parentFolder) {
+        ObjectInputStream is = null;
+        try {
+            is = new ObjectInputStream(new FileInputStream(new File(parentFolder,
+                    fileName)));
             return is.readObject();
         } catch (FileNotFoundException e) {
             e.printStackTrace();

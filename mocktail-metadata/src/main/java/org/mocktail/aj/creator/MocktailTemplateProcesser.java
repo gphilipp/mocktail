@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.exception.MethodInvocationException;
@@ -52,6 +53,11 @@ public class MocktailTemplateProcesser {
         Map<String, Object> contextMap = new HashMap<String, Object>();
         contextMap.put("fqcn", mocktail.getClassFQCN());
         contextMap.put("className", mocktail.getClassName());
+        contextMap.put("packageName", mocktail.getClassPackageName());
+        String targetImpl = mocktail.getTargetImpl();
+        if(StringUtils.isNotEmpty(targetImpl)){
+            contextMap.put("targetImpl", targetImpl);
+        }
         String recordingDirectory = MocktailContainer.getInstance()
                 .getRecordingDirectory();
         contextMap.put("recordingDirectory", recordingDirectory);
@@ -82,7 +88,7 @@ public class MocktailTemplateProcesser {
         if (!aspectFileDirectory.exists()) {
             aspectFileDirectory.mkdirs();
         }
-        File file = new File(aspectFileDirectory, aspectFileName + ".aj");
+        File file = new File(aspectFileDirectory, aspectFileName + ".java");
         System.out.println("file path:"+ file.getAbsolutePath());
         try {
             FileWriter aspectOs = new FileWriter(file);
