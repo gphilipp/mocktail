@@ -36,7 +36,7 @@ public class RecorderAspectClinic {
         recordingBasePath = "/Users/shrikant/code/github/mocktail/plugin-samples/spring-petclinic/target/generated/recordings";
     }
 
-			@Around("execution(* org.springframework.samples.petclinic.Clinic.getVets(..)) && target(org.springframework.samples.petclinic.jdbc.SimpleJdbcClinic)")
+			@Around("execution(* org.springframework.samples.petclinic.Clinic.getVets(..)) && target(org.springframework.samples.petclinic.hibernate.HibernateClinic)")
 	    public Object advicegetVets(ProceedingJoinPoint pjp) throws Throwable {
         String recordingFileName = uniqueIdGenerator.getUniqueId("getVets",
                 pjp.getArgs()) + "";
