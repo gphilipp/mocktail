@@ -35,27 +35,35 @@ public class RecorderAspect$className {
         fileSeparator = "/";
         recordingBasePath = "$recordingDirectory";
     }
-
-	#foreach($method in $methods)
-	#if ($targetImpl) 
-	@Around("execution(* $fqcn.$method(..)) && target($targetImpl)")
-	#else
-	@Around("execution(* $fqcn.$method(..))")
-	#end
+    
+    #foreach($method in $methods)
+    #if ($targetImpl)
+    
+    @Around("execution(* $fqcn.$method(..)) && target($targetImpl)")
+    #else
+    
+    @Around("execution(* $fqcn.$method(..))")
+    #end
+    
     public Object advice$method(ProceedingJoinPoint pjp) throws Throwable {
-        String recordingFileName = uniqueIdGenerator.getUniqueId("$method",
-                pjp.getArgs()) + "";
+        String recordingFileName = uniqueIdGenerator.getUniqueId("$method", pjp.getArgs()) + "";
         String methodName = "$method";
-        
+        return executeAspect(pjp, recordingFileName, methodName);
+    }
+    #end
+    
+    private Object executeAspect(ProceedingJoinPoint pjp,
+            String recordingFileName, String methodName) throws Throwable {
         boolean voidReturnType = isVoidReturnType(pjp);
         System.out.println("EXECUTING ASPECT NOW");
         System.out.println("++++++++++++++++++++");
-        
+
         Object objectToBeRecorded = null;
         MethodMocktail methodMocktail = mocktailContainer.getMethodMocktail();
         if (methodMocktail != null) {
             objectToBeRecorded = mocktailForEachTestMethod(pjp,
-                    recordingFileName, voidReturnType, methodMocktail, methodName);
+                    recordingFileName, voidReturnType, methodMocktail,
+                    methodName);
         } else {
             objectToBeRecorded = mocktailWithSharedData(pjp, recordingFileName,
                     voidReturnType, methodName);
@@ -63,7 +71,6 @@ public class RecorderAspect$className {
 
         return objectToBeRecorded;
     }
-    #end
 
     private boolean isVoidReturnType(ProceedingJoinPoint pjp) {
         Method method = ((MethodSignature) pjp.getSignature()).getMethod();
