@@ -39,7 +39,7 @@ public class MocktailTemplateProcesserTest {
         Mocktail mocktail = createClassMocktail();
         MocktailTemplateProcesser templateProcessor = new MocktailTemplateProcesser();
         String templatedString = templateProcessor.processTemplate(mocktail,
-                AspectType.CLASS_ASPECT_TYPE, MocktailMode.RECORDING_MODE);
+                AspectType.CLASS_ASPECT_TYPE, MocktailMode.RECORDING);
 
         String expectedpointcut = "pointcut callPointcut() : call(* org.mocktail.aj.creator.TemplateProcesserTest.*(..));";
         assertTrue(templatedString.contains(expectedpointcut));
@@ -55,7 +55,7 @@ public class MocktailTemplateProcesserTest {
         MocktailTemplateProcesser templateProcessor = new MocktailTemplateProcesser();
 
         String templatedString = templateProcessor.processTemplate(mocktail,
-                AspectType.METHODS_ASPECT_TYPE, MocktailMode.RECORDING_MODE);
+                AspectType.METHODS_ASPECT_TYPE, MocktailMode.RECORDING);
         System.out.println(templatedString);
 
         String expectedpointcut = "@Around(\"execution(* org.mocktail.aj.creator.TemplateProcesserTest.method1(..))\")";
@@ -100,7 +100,7 @@ public class MocktailTemplateProcesserTest {
 
         aspectsCreator.createClassAspect(
                 MocktailObjectMother.createClassMocktail("AspectedClass", ""),
-                aspectsRootDirectory, MocktailMode.RECORDING_MODE);
+                aspectsRootDirectory, MocktailMode.RECORDING);
 
         System.out.println("aspect root directory:"
                 + aspectsRootDirectory.getAbsolutePath());
@@ -120,7 +120,7 @@ public class MocktailTemplateProcesserTest {
         MocktailTemplateProcesser templateProcessor = new MocktailTemplateProcesser();
         String templatedMethodObjectString = templateProcessor.processTemplate(
                 methodMocktail, AspectType.METHODS_ASPECT_TYPE,
-                MocktailMode.RECORDING_MODE);
+                MocktailMode.RECORDING);
 
         assertThat(templatedMethodObjectString,
                 containsString("public aspect RecorderAspectname"));
@@ -149,7 +149,7 @@ public class MocktailTemplateProcesserTest {
         MocktailTemplateProcesser templateProcessor = new MocktailTemplateProcesser();
         String templatedMethodObjectString = templateProcessor.processTemplate(
                 methodMocktail, AspectType.METHODS_ASPECT_TYPE,
-                MocktailMode.PLAYBACK_MODE);
+                MocktailMode.PLAYBACK);
         System.out.println("The templatemethod string is\n"+templatedMethodObjectString);
         assertThat(templatedMethodObjectString,
                 containsString("public class PlaybackAspectname"));
@@ -175,7 +175,7 @@ public class MocktailTemplateProcesserTest {
 
         String templatedClassObjectString = templateProcessor.processTemplate(
                 classMocktail, AspectType.CLASS_ASPECT_TYPE,
-                MocktailMode.RECORDING_MODE);
+                MocktailMode.RECORDING);
         System.out.println(templatedClassObjectString);
         assertThat(templatedClassObjectString,
                 containsString("public aspect RecorderAspectAspectedClass"));

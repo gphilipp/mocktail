@@ -151,4 +151,9 @@ public class ObjectFileOperations {
         return null;
     }
 
+	public boolean deleteObject(String objectId, String location) {
+		File file = new File(location, objectId);
+		return file.delete();
+	}
+
 }

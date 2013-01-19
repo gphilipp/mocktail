@@ -35,22 +35,28 @@ public class RecorderAspectClinic {
         fileSeparator = "/";
         recordingBasePath = "/Users/shrikant/code/github/mocktail/plugin-samples/spring-petclinic/target/generated/recordings";
     }
-
-			@Around("execution(* org.springframework.samples.petclinic.Clinic.getVets(..)) && target(org.springframework.samples.petclinic.hibernate.HibernateClinic)")
-	    public Object advicegetVets(ProceedingJoinPoint pjp) throws Throwable {
-        String recordingFileName = uniqueIdGenerator.getUniqueId("getVets",
-                pjp.getArgs()) + "";
-        String methodName = "getVets";
+    
+            
+    @Around("execution(* org.springframework.samples.petclinic.Clinic.getVets(..)) && target(org.springframework.samples.petclinic.hibernate.HibernateClinic)")
         
+    public Object advicegetVets(ProceedingJoinPoint pjp) throws Throwable {
+        String recordingFileName = uniqueIdGenerator.getUniqueId("getVets", pjp.getArgs()) + "";
+        String methodName = "getVets";
+        return executeAspect(pjp, recordingFileName, methodName);
+    }
+        
+    private Object executeAspect(ProceedingJoinPoint pjp,
+            String recordingFileName, String methodName) throws Throwable {
         boolean voidReturnType = isVoidReturnType(pjp);
         System.out.println("EXECUTING ASPECT NOW");
         System.out.println("++++++++++++++++++++");
-        
+
         Object objectToBeRecorded = null;
         MethodMocktail methodMocktail = mocktailContainer.getMethodMocktail();
         if (methodMocktail != null) {
             objectToBeRecorded = mocktailForEachTestMethod(pjp,
-                    recordingFileName, voidReturnType, methodMocktail, methodName);
+                    recordingFileName, voidReturnType, methodMocktail,
+                    methodName);
         } else {
             objectToBeRecorded = mocktailWithSharedData(pjp, recordingFileName,
                     voidReturnType, methodName);
@@ -58,7 +64,7 @@ public class RecorderAspectClinic {
 
         return objectToBeRecorded;
     }
-    
+
     private boolean isVoidReturnType(ProceedingJoinPoint pjp) {
         Method method = ((MethodSignature) pjp.getSignature()).getMethod();
         boolean voidReturnType = false;
