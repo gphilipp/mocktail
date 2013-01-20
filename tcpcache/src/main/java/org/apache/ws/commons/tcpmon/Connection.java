@@ -312,9 +312,10 @@ class Connection extends Thread {
 			} catch (ConnectException e) {
 				e.printStackTrace();
 				System.err
-						.println("Could not connect to target host, instead trying to get from cache:"
+						.println("Could not connect to target host:"+targetHost+":"+targetPort+", instead trying to get from cache:"
 								+ e.getMessage());
 				writeResponseFromCache(inSocketOutputStream);
+	            halt();
 				return;
 			}
 

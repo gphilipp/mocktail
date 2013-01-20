@@ -183,8 +183,9 @@ class SocketRR extends Thread {
                 int len1 = 0;
                 while (len1 == 0) {
                     try {
-                    	System.out.println(this.type+" reading input stream+++");
+                    	
                         len1 = inputStream.read(buffer, saved, len);
+                        System.out.println(this.type+" reading input stream+++"+len1+"[saved:"+saved);
                     } catch (Exception ex) {
                     	ex.printStackTrace();
                         if (done && (saved == 0)) {
@@ -211,7 +212,8 @@ class SocketRR extends Thread {
                 	System.err.println("The svaed is:"+saved);
                     outputStream.write(buffer, saved, len);
                     response = response + new String(buffer, saved, len);
-                    if(response.endsWith("</soap:Envelope>")){
+                    System.out.println("The response is:"+response+"<>");
+                    if(response.contains("</soap:Envelope>")|| response.contains("</soapenv:Envelope>")){
                     	saveInMocktailRepository();
                     }
                 }
