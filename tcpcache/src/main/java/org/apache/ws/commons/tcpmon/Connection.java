@@ -29,6 +29,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Set;
 
 import org.mocktail.repository.DiskObjectRepository;
 import org.mocktail.xml.domain.MocktailMode;
@@ -343,12 +344,13 @@ class Connection extends Thread {
 
 				if ((null != rr1) && rr1.isDone()) {
 					System.err.println("DONEDONE");
-
+//					rr1.halt();
 					rr1 = null;
 				}
 
 				if ((null != rr2) && rr2.isDone()) {
 					System.err.println("DONE");
+//					rr2.halt();
 					rr2 = null;
 				}
 
@@ -358,6 +360,9 @@ class Connection extends Thread {
 				}
 			}
 			active = false;
+			
+			System.err.println("REALLY REALLY DONE");
+
 		} catch (Exception e) {
 			StringWriter st = new StringWriter();
 			PrintWriter wr = new PrintWriter(st);
@@ -367,6 +372,10 @@ class Connection extends Thread {
 			System.out.println(st.toString());
 			halt();
 		}
+		Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+        for (Thread thread : threadSet) {
+            System.out.println("The thread is:"+thread);
+        }
 	}
 	
 	private boolean isObjectExistInCache() {
@@ -475,6 +484,7 @@ class Connection extends Thread {
 	 * Method halt
 	 */
 	public void halt() {
+		System.err.println("Connection.halt() called");
 		try {
 			if (rr1 != null) {
 				rr1.halt();

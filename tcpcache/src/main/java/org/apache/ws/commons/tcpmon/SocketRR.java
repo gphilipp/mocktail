@@ -183,7 +183,9 @@ class SocketRR extends Thread {
                 int len1 = 0;
                 while (len1 == 0) {
                     try {
-                    	
+                        System.out.println(this.type+" Before reading"+len1);
+                        int availableBytes = inputStream.available();
+                        System.out.println(this.type+" available bytes:"+availableBytes);
                         len1 = inputStream.read(buffer, saved, len);
                         System.out.println(this.type+" reading input stream+++"+len1+"[saved:"+saved);
                     } catch (Exception ex) {
@@ -199,7 +201,7 @@ class SocketRR extends Thread {
                 if ((len == -1) && (saved == 0)) {
                     break;
                 }
-                if (len == -1) {
+                if (len == -1 || inputStream.available() == 0) {
                     done = true;
                 }
                 
@@ -356,6 +358,7 @@ class SocketRR extends Thread {
      * Method halt
      */
     public void halt() {
+    	System.err.println("SocketRR.halt() called");
         try {
             if (inSocket != null) {
                 inSocket.close();
