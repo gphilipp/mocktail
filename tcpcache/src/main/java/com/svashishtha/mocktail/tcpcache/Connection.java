@@ -210,7 +210,7 @@ class Connection extends Thread {
             } else {
                 fromHost = "resend";
             }
-            String dateformat = TCPMon.getMessage("dateformat00",
+            String dateformat = TcpCache.getMessage("dateformat00",
                     "yyyy-MM-dd HH:mm:ss");
             DateFormat df = new SimpleDateFormat(dateformat);
             time = df.format(new Date());
