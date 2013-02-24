@@ -21,6 +21,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import org.slf4j.LoggerFactory;
+
 
 import com.svashishtha.mocktail.MocktailMode;
 import com.svashishtha.mocktail.repository.DiskObjectRepository;
@@ -31,6 +33,8 @@ import com.svashishtha.mocktail.repository.ObjectRepository;
  * outgoing socket
  */
 class SocketRR extends Thread {
+    private static final org.slf4j.Logger log = LoggerFactory
+            .getLogger(SocketRR.class);
 
 	/**
      * Field inSocket
@@ -92,6 +96,8 @@ class SocketRR extends Thread {
 
 	private Object cacheLocation;
 
+    private boolean cachingOn;
+
 
     /**
      * Constructor SocketRR
@@ -109,13 +115,14 @@ class SocketRR extends Thread {
      * @param mocktailMode 
      * @param className 
      * @param methodName 
+     * @param cachingOn 
      * @param slowLink
      */
     public SocketRR(Connection c, Socket inputSocket,
                     InputStream inputStream, Socket outputSocket,
                     OutputStream outputStream, 
                     boolean format,  int index,
-                    final String type, String className, String methodName, MocktailMode mocktailMode, String cacheLocation) {
+                    final String type, String className, String methodName, MocktailMode mocktailMode, boolean cachingOn, String cacheLocation) {
         inSocket = inputSocket;
         this.inputStream = inputStream;
         this.outSocket = outputSocket;
@@ -128,6 +135,7 @@ class SocketRR extends Thread {
 		this.methodName = methodName;
 		this.mocktailMode = mocktailMode;
 		this.cacheLocation = cacheLocation;
+		this.cachingOn = cachingOn;
         start();
     }
 
@@ -184,11 +192,7 @@ class SocketRR extends Thread {
                 int len1 = 0;
                 while (len1 == 0) {
                     try {
-                        System.out.println(this.type+" Before reading"+len1);
-                        int availableBytes = inputStream.available();
-                        System.out.println(this.type+" available bytes:"+availableBytes);
                         len1 = inputStream.read(buffer, saved, len);
-                        System.out.println(this.type+" reading input stream+++"+len1+"[saved:"+saved);
                     } catch (Exception ex) {
                     	ex.printStackTrace();
                         if (done && (saved == 0)) {
@@ -212,11 +216,10 @@ class SocketRR extends Thread {
                 // on unformatted - we don't want to mess with how its
                 // sent to the other side, just how its displayed
                 if ((outputStream != null) && (len > 0)) {
-                	System.err.println("The svaed is:"+saved);
                     outputStream.write(buffer, saved, len);
                     response = response + new String(buffer, saved, len);
                     System.out.println("The response is:"+response+"<>");
-                    if(response.contains("</soap:Envelope>")|| response.contains("</soapenv:Envelope>")){
+                    if(cachingOn && (response.contains("</soap:Envelope>")|| response.contains("</soapenv:Envelope>"))){
                     	saveInMocktailRepository();
                     }
                 }
@@ -282,13 +285,11 @@ class SocketRR extends Thread {
                 } 
                
             }
-            System.err.println("THE RESPONSE2:"+response);
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             done = true;
-            System.err.println("THE RESPONSE:"+response);
             try {
                 if (outputStream != null) {
                     outputStream.flush();
@@ -359,7 +360,7 @@ class SocketRR extends Thread {
      * Method halt
      */
     public void halt() {
-    	System.err.println("SocketRR.halt() called");
+    	log.info("SocketRR.halt() called");
         try {
             if (inSocket != null) {
                 inSocket.close();
