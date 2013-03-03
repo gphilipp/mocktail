@@ -204,8 +204,12 @@
                     try{
                         java.lang.String exceptionClassName = (java.lang.String)faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(faultElt.getQName(),"concat"));
                         java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
-                        java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                        Class [] classes = new Class[1];
+                        classes[0] = String.class;
+                        java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(classes);
+                        Object [] params = new Object[1];
+                        params[0] = f.getMessage();
+                        java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(params);
                         //message class
                         java.lang.String messageClassName = (java.lang.String)faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(faultElt.getQName(),"concat"));
                         java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
@@ -323,8 +327,12 @@
 											try{
 													java.lang.String exceptionClassName = (java.lang.String)faultExceptionClassNameMap.get(new org.apache.axis2.client.FaultMapKey(faultElt.getQName(),"concat"));
 													java.lang.Class exceptionClass = java.lang.Class.forName(exceptionClassName);
-													java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(String.class);
-                                                    java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(f.getMessage());
+                     Class [] classes = new Class[1];
+                     classes[0] = String.class;
+													java.lang.reflect.Constructor constructor = exceptionClass.getConstructor(classes);
+                     Object[] params = new Object[1];
+                     params[0] = f.getMessage();
+                                                    java.lang.Exception ex = (java.lang.Exception) constructor.newInstance(params);
 													//message class
 													java.lang.String messageClassName = (java.lang.String)faultMessageMap.get(new org.apache.axis2.client.FaultMapKey(faultElt.getQName(),"concat"));
 														java.lang.Class messageClass = java.lang.Class.forName(messageClassName);
