@@ -41,7 +41,6 @@ public class MethodMocktail implements Serializable{
         element = getStackTraceElement(this.getClass().getName(), Thread.currentThread()
                 .getStackTrace());
         methodName = element.getMethodName();
-        System.out.println("Inside setup:"+methodName);
     }
 
 
