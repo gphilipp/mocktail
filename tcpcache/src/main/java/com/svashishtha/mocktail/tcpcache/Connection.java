@@ -16,21 +16,18 @@
 
 package com.svashishtha.mocktail.tcpcache;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.net.UnknownHostException;
 
-import com.svashishtha.mocktail.MocktailConfig;
 import com.svashishtha.mocktail.MocktailMode;
 import com.svashishtha.mocktail.repository.DiskObjectRepository;
 
@@ -38,27 +35,7 @@ import com.svashishtha.mocktail.repository.DiskObjectRepository;
  * a connection listens to a single current connection
  */
 class Connection extends Thread {
-    public static final String DEFAULT_CACHE_LOCATION = "src/test/resources";
-
-    /**
-     * Field active
-     */
-    boolean active;
-
-    /**
-     * Field fromHost
-     */
-    String fromHost;
-
-    /**
-     * Field time
-     */
-    String time;
-
-    /**
-     * Field elapsed time
-     */
-    long elapsedTime;
+    
 
     /**
      * Field inputText
@@ -105,46 +82,11 @@ class Connection extends Thread {
      */
     int HTTPProxyPort = 80;
 
-    private String targetHost;
-
-    private int targetPort;
-
     private boolean proxySelected;
 
-    private int listenPort;
-
-    private boolean xmlFormatSelected;
-
-    private String className;
-
-    private MocktailMode mocktailMode;
-
-    private String methodName;
-
-    private String cacheLocation;
-
-    public boolean isXmlFormatSelected() {
-        return xmlFormatSelected;
-    }
-
-    public void setXmlFormatSelected(boolean xmlFormatSelected) {
-        this.xmlFormatSelected = xmlFormatSelected;
-    }
-
-    /**
-     * Constructor Connection
-     * 
-     * @param l
-     */
-    public Connection(Listener l, String targetHost, int targetPort,
-            int listenPort) {
-        HTTPProxyHost = l.HTTPProxyHost;
-        HTTPProxyPort = l.HTTPProxyPort;
-        this.targetHost = targetHost;
-        this.targetPort = targetPort;
-        this.listenPort = listenPort;
-        start();
-    }
+    private Configuration config;
+    
+    private CacheFileInfo cacheFileInfo;
 
     /**
      * Constructor Connection
@@ -155,16 +97,9 @@ class Connection extends Thread {
      * @param objectId
      * @param methodName
      */
-    public Connection(Socket s, String targetHost, int targetPort,
-            int listenPort, String objectId, String methodName,
-            MocktailMode mocktailMode) {
+    public Connection(Socket s, Configuration config) {
         inSocket = s;
-        this.targetHost = targetHost;
-        this.targetPort = targetPort;
-        this.listenPort = listenPort;
-        this.className = objectId;
-        this.methodName = methodName;
-        this.mocktailMode = mocktailMode;
+        this.config = config;
         start();
     }
 
@@ -183,42 +118,12 @@ class Connection extends Thread {
      * Method run
      */
     public void run() {
-        boolean cachingOn = getCachingIndicator();
-        cacheLocation = MocktailConfig.INSTANCE.getProperty("recordingDir");
-        if (cacheLocation == null || "".equals(cacheLocation)) {
-            cacheLocation = DEFAULT_CACHE_LOCATION;
-        }
         try {
-            active = true;
-            HTTPProxyHost = System.getProperty("http.proxyHost");
-            if ((HTTPProxyHost != null) && HTTPProxyHost.equals("")) {
-                HTTPProxyHost = null;
-            }
-            if (HTTPProxyHost != null) {
-                String tmp = System.getProperty("http.proxyPort");
-                if ((tmp != null) && tmp.equals("")) {
-                    tmp = null;
-                }
-                if (tmp == null) {
-                    HTTPProxyPort = 80;
-                } else {
-                    HTTPProxyPort = Integer.parseInt(tmp);
-                }
-            }
-            if (inSocket != null) {
-                fromHost = (inSocket.getInetAddress()).getHostName();
-            } else {
-                fromHost = "resend";
-            }
-            String dateformat = TcpCache.getMessage("dateformat00",
-                    "yyyy-MM-dd HH:mm:ss");
-            DateFormat df = new SimpleDateFormat(dateformat);
-            time = df.format(new Date());
+            setProxyConfigIfAvailable();
+            cacheFileInfo = new CacheFileInfo(config);
             // FIXME
             InputStream incomingStream = inputStream;
             OutputStream inSocketOutputStream = null;
-            InputStream outSocketInputStream = null;
-            OutputStream outSocketOutputStream = null;
             if (incomingStream == null) {
                 incomingStream = inSocket.getInputStream();
             }
@@ -229,140 +134,31 @@ class Connection extends Thread {
             StringBuffer buf = null;
             // FIXME
             if (isProxySelected()) {
-                bufferedData = processForProxy(incomingStream);
+                bufferedData = createInputRequestWithProxy(incomingStream);
             } else {
-
-                //
-                // Change Host: header to point to correct host
-                //
-                byte[] b1 = new byte[1];
-                buf = new StringBuffer();
-                String s1;
-                String lastLine = null;
-                for (;;) {
-                    int len;
-                    len = incomingStream.read(b1, 0, 1);
-                    if (len == -1) {
-                        break;
-                    }
-                    s1 = new String(b1);
-                    buf.append(s1);
-                    if (b1[0] != '\n') {
-                        continue;
-                    }
-
-                    // we have a complete line
-                    String line = buf.toString();
-                    buf.setLength(0);
-
-                    // check to see if we have found Host: header
-                    if (line.startsWith("Host: ")) {
-                        // we need to update the hostname to target host
-                        String newHost = "Host: " + targetHost + ":"
-                                + listenPort + "\r\n";
-                        bufferedData = bufferedData.concat(newHost);
-                        break;
-                    }
-
-                    // add it to our headers so far
-                    if (bufferedData == null) {
-                        bufferedData = line;
-                    } else {
-                        bufferedData = bufferedData.concat(line);
-                    }
-
-                    // failsafe
-                    if (line.equals("\r\n")) {
-                        break;
-                    }
-                    if ("\n".equals(lastLine) && line.equals("\n")) {
-                        break;
-                    }
-                    lastLine = line;
-                }
-                if (bufferedData != null) {
-                    int idx = (bufferedData.length() < 50) ? bufferedData
-                            .length() : 50;
-                    s1 = bufferedData.substring(0, idx);
-                    int i = s1.indexOf('\n');
-                    if (i > 0) {
-                        s1 = s1.substring(0, i - 1);
-                    }
-                    s1 = s1 + "                           "
-                            + "                       ";
-                    s1 = s1.substring(0, 51);
-                }
+                bufferedData = createInputRequest(incomingStream);
             }
-            if (targetPort == -1) {
-                targetPort = 80;
-            }
-
+            
             try {
-                if (cachingOn && MocktailMode.RECORDING_NEW != mocktailMode) {
+                if (MocktailMode.PLAYBACK.equals(config.getMocktailMode())) {
                     if (isObjectExistInCache()) {
                         writeResponseFromCache(inSocketOutputStream);
-                        return;
                     }
-                }
-                outSocket = new Socket(targetHost, targetPort);
-                outSocketOutputStream = outSocket.getOutputStream();
-                if (bufferedData != null) {
-                    byte[] bytes = bufferedData.getBytes();
-                    System.err
-                            .println("The bytes to be written on output socket are:"
-                                    + new String(bytes, "UTF-8"));
-                    outSocketOutputStream.write(bytes);
+                } else {
+                    getResponseFromTargetServer(incomingStream,
+                            inSocketOutputStream, bufferedData);
                 }
             } catch (ConnectException e) {
                 e.printStackTrace();
-                if (cachingOn) {
+                if (config.isCachingOn()) {
                     System.err.println("Could not connect to target host:"
-                            + targetHost + ":" + targetPort
+                            + config.getTargetHost() + ":" + config.getTargetPort()
                             + ", instead trying to get from cache:"
                             + e.getMessage());
                     writeResponseFromCache(inSocketOutputStream);
-                } 
-                halt();
+                }
                 return;
             }
-
-            boolean format = isXmlFormat();
-
-            // sends the request to endpoint
-            // this is the channel to the endpoint
-            rr1 = new SocketRR(this, inSocket, incomingStream, outSocket,
-                    outSocketOutputStream, format, 1, "request:", className,
-                    methodName, mocktailMode, cachingOn, cacheLocation);
-
-            // gets the response from endpoint
-            // create the response slow link from the inbound slow link
-            // this is the channel from the endpoint
-            outSocketInputStream = outSocket.getInputStream();
-            rr2 = new SocketRR(this, outSocket, outSocketInputStream, inSocket,
-                    inSocketOutputStream, format, 0, "response:", className,
-                    methodName, mocktailMode, cachingOn, cacheLocation);
-
-            while ((rr1 != null) || (rr2 != null)) {
-                // Only loop as long as the connection to the target
-                // machine is available - once that's gone we can stop.
-                // The old way, loop until both are closed, left us
-                // looping forever since no one closed the 1st one.
-
-                if ((null != rr1) && rr1.isDone()) {
-                    rr1 = null;
-                }
-
-                if ((null != rr2) && rr2.isDone()) {
-                    rr2 = null;
-                }
-
-                synchronized (this) {
-                    this.wait(100); // Safety just incase we're not told to wake
-                                    // up.
-                }
-            }
-            active = false;
-
         } catch (Exception e) {
             StringWriter st = new StringWriter();
             PrintWriter wr = new PrintWriter(st);
@@ -370,35 +166,126 @@ class Connection extends Thread {
             e.printStackTrace(wr);
             wr.close();
             System.out.println(st.toString());
-            halt();
+            // halt();
         }
     }
 
-    private boolean getCachingIndicator() {
-        String cachingIndStr = MocktailConfig.INSTANCE.getProperty("cachingOn");
-        if ("false".equals(cachingIndStr)) {
-            return false;
+    private void getResponseFromTargetServer(
+            InputStream incomingStream, OutputStream inSocketOutputStream,
+            String bufferedData) throws UnknownHostException, IOException,
+            UnsupportedEncodingException, InterruptedException {
+        InputStream outSocketInputStream;
+        OutputStream outSocketOutputStream;
+        outSocket = new Socket(config.getTargetHost(), config.getTargetPort());
+        outSocketOutputStream = outSocket.getOutputStream();
+        byte[] bytes = bufferedData.getBytes();
+        System.err
+                .println("The bytes to be written on output socket are:"
+                        + new String(bytes, "UTF-8"));
+        outSocketOutputStream.write(bytes);
+
+        // sends the request to endpoint
+        // this is the channel to the endpoint
+        rr1 = new SocketRR(this, inSocket, incomingStream, outSocket,
+                outSocketOutputStream, "request:", config);
+
+        // gets the response from endpoint
+        // create the response slow link from the inbound slow link
+        // this is the channel from the endpoint
+        outSocketInputStream = outSocket.getInputStream();
+        rr2 = new SocketRR(this, outSocket, outSocketInputStream, inSocket,
+                inSocketOutputStream, "response:", config);
+        
+//        rr1.join();
+//        rr2.join();
+        System.err.println("rr1 isDone?"+ rr1.isDone());
+        System.err.println("rr2 isDone?"+ rr2.isDone());
+    }
+    
+ 
+
+
+    private String createInputRequest(InputStream incomingStream)
+            throws IOException {
+        StringBuffer buf;
+        byte[] b1 = new byte[1];
+        buf = new StringBuffer();
+        String lastLine = null;
+        String bufferedData = null;
+        for (;;) {
+            int len;
+            len = incomingStream.read(b1, 0, 1);
+            if (len == -1) {
+                break;
+            }
+            String s1 = new String(b1);
+            buf.append(s1);
+            if (b1[0] != '\n') {
+                continue;
+            }
+
+            // we have a complete line
+            String line = buf.toString();
+            buf.setLength(0);
+
+            // check to see if we have found Host: header
+            if (line.startsWith("Host: ")) {
+                // we need to update the hostname to target host
+                String newHost = "Host: " + config.getTargetHost() + ":" + config.getLocalPort()
+                        + "\r\n";
+                bufferedData = bufferedData.concat(newHost);
+                break;
+            }
+
+            // add it to our headers so far
+            if (bufferedData == null) {
+                bufferedData = line;
+            } else {
+                bufferedData = bufferedData.concat(line);
+            }
+
+            // failsafe
+            if (line.equals("\r\n")) {
+                break;
+            }
+            if ("\n".equals(lastLine) && line.equals("\n")) {
+                break;
+            }
+            lastLine = line;
         }
-        return true;
+        return bufferedData;
+    }
+
+    private void setProxyConfigIfAvailable() {
+        HTTPProxyHost = System.getProperty("http.proxyHost");
+        if ((HTTPProxyHost != null) && HTTPProxyHost.equals("")) {
+            HTTPProxyHost = null;
+        }
+        if (HTTPProxyHost != null) {
+            String tmp = System.getProperty("http.proxyPort");
+            if ((tmp != null) && tmp.equals("")) {
+                tmp = null;
+            }
+            if (tmp == null) {
+                HTTPProxyPort = 80;
+            } else {
+                HTTPProxyPort = Integer.parseInt(tmp);
+            }
+        }
     }
 
     private boolean isObjectExistInCache() {
-        String location = System.getProperty("user.dir") + File.separator
-                + cacheLocation;
+        String location = cacheFileInfo.getCacheFileLocation();
+        String objectId = cacheFileInfo.getObjectId();
         DiskObjectRepository objectRepository = new DiskObjectRepository();
-        return objectRepository.objectAlreadyExist(className, location);
+        return objectRepository.objectAlreadyExist(objectId, location);
     }
 
     private void writeResponseFromCache(OutputStream inSocketOutputStream)
             throws IOException {
-        String packageName = className.substring(0, className.lastIndexOf("."));
-
-        String location = System.getProperty("user.dir") + File.separator
-                + cacheLocation + File.separator
-                + packageName.replaceAll("\\.", File.separator);
-        System.out.println("The class name is:" + className);
-        String objectId = className.substring(className.lastIndexOf(".") + 1)
-                + "." + methodName;
+        String location = cacheFileInfo.getCacheFileLocation();
+        System.out.println("The class name is:" + config.getTestClassName());
+        String objectId = cacheFileInfo.getObjectId();
         String response = getResponseFromDisk(location, objectId);
         System.err.println("The response is(((((:" + response);
 
@@ -412,12 +299,9 @@ class Connection extends Thread {
         return (String) objectRepository.getObject(objectId2, location);
     }
 
-    private boolean isXmlFormat() {
-        return xmlFormatSelected;
-    }
 
-    private String processForProxy(InputStream tmpIn1) throws IOException,
-            MalformedURLException {
+    private String createInputRequestWithProxy(InputStream tmpIn1)
+            throws IOException, MalformedURLException {
         String bufferedData;
         StringBuffer buf;
         // Check if we're a proxy
@@ -455,20 +339,20 @@ class Connection extends Thread {
             // FIXME
             if (isProxySelected()) {
                 url = new URL(urlString);
-                targetHost = url.getHost();
-                targetPort = url.getPort();
+                String targetHost = url.getHost();
+                int targetPort = url.getPort();
                 if (targetPort == -1) {
                     targetPort = 80;
                 }
                 bufferedData = bufferedData.substring(0, start) + url.getFile()
                         + bufferedData.substring(end);
             } else {
-                url = new URL("http://" + targetHost + ":" + targetPort + "/"
+                url = new URL("http://" + config.getTargetHost() + ":" + config.getTargetPort() + "/"
                         + urlString);
                 bufferedData = bufferedData.substring(0, start)
                         + url.toExternalForm() + bufferedData.substring(end);
-                targetHost = HTTPProxyHost;
-                targetPort = HTTPProxyPort;
+                config.setTargetHost(HTTPProxyHost);
+                config.setTargetPort(HTTPProxyPort);
             }
         }
         return bufferedData;
@@ -485,39 +369,4 @@ class Connection extends Thread {
         this.notifyAll();
     }
 
-    /**
-     * Method halt
-     */
-    public void halt() {
-        System.err.println("Connection.halt() called");
-        try {
-            if (rr1 != null) {
-                rr1.halt();
-            }
-            if (rr2 != null) {
-                rr2.halt();
-            }
-            if (inSocket != null) {
-                inSocket.close();
-            }
-            inSocket = null;
-            if (outSocket != null) {
-                outSocket.close();
-            }
-            outSocket = null;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Method remove
-     */
-    public void remove() {
-        try {
-            halt();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

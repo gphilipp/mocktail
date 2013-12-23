@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="3.02" errors="0" skipped="0" tests="2" name="com.svashishtha.mocktail.samples.orm.UserDetailServiceTest">
+<testsuite failures="0" time="2.74" errors="0" skipped="0" tests="2" name="com.svashishtha.mocktail.samples.orm.UserDetailServiceTest">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Libraries"/>
@@ -33,7 +33,7 @@
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.class.version" value="50.0"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
-    <property name="os.version" value="10.9"/>
+    <property name="os.version" value="10.9.1"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="user.home" value="/Users/shrikant"/>
     <property name="user.timezone" value="GMT+05:30"/>
@@ -64,6 +64,6 @@
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="2.723" classname="com.svashishtha.mocktail.samples.orm.UserDetailServiceTest" name="shouldGetUserDetail"/>
-  <testcase time="0.252" classname="com.svashishtha.mocktail.samples.orm.UserDetailServiceTest" name="shouldGetAllUsers"/>
+  <testcase time="2.432" classname="com.svashishtha.mocktail.samples.orm.UserDetailServiceTest" name="shouldGetUserDetail"/>
+  <testcase time="0.249" classname="com.svashishtha.mocktail.samples.orm.UserDetailServiceTest" name="shouldGetAllUsers"/>
 </testsuite>

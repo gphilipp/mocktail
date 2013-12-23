@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite failures="0" time="2.862" errors="0" skipped="0" tests="10" name="org.springframework.samples.petclinic.hibernate.HibernateClinicTests">
+<testsuite failures="0" time="2.898" errors="0" skipped="0" tests="10" name="org.springframework.samples.petclinic.hibernate.HibernateClinicTests">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/System/Library/Java/JavaVirtualMachines/1.6.0.jdk/Contents/Libraries"/>
@@ -33,7 +33,7 @@
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.class.version" value="50.0"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
-    <property name="os.version" value="10.9"/>
+    <property name="os.version" value="10.9.1"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="user.home" value="/Users/shrikant"/>
     <property name="user.timezone" value="GMT+05:30"/>
@@ -64,14 +64,14 @@
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase time="2.76" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="getVets"/>
-  <testcase time="0.009" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="getPetTypes"/>
-  <testcase time="0.033" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="findOwners"/>
-  <testcase time="0.008" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="loadOwner"/>
+  <testcase time="2.782" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="getVets"/>
+  <testcase time="0.011" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="getPetTypes"/>
+  <testcase time="0.042" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="findOwners"/>
+  <testcase time="0.007" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="loadOwner"/>
   <testcase time="0.01" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="insertOwner"/>
-  <testcase time="0.005" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="updateOwner"/>
-  <testcase time="0.01" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="loadPet"/>
-  <testcase time="0.012" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="insertPet"/>
+  <testcase time="0.004" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="updateOwner"/>
+  <testcase time="0.011" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="loadPet"/>
+  <testcase time="0.015" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="insertPet"/>
   <testcase time="0.007" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="updatePet"/>
-  <testcase time="0.008" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="insertVisit"/>
+  <testcase time="0.009" classname="org.springframework.samples.petclinic.hibernate.HibernateClinicTests" name="insertVisit"/>
 </testsuite>
