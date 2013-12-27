@@ -14,19 +14,17 @@ import org.hsqldb.jdbcDriver;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
 import com.svashishtha.mocktail.metadata.MethodMocktail;
 
+//FIXME test is not repeatable while running with "mvn install" after one run using "mvn clean install"
 public class UserDaoTest {
 
     private JdbcTemplate jdbcTemplate;
     UserDao userDao;
-    
-    
 
     @Before
     public void setup() {
@@ -48,7 +46,7 @@ public class UserDaoTest {
 
     @Test
     public void testGetUser() {
-        
+
         // search with recording mode
         UserDetail userDetail = userDao.get(1L);
         assertNotNull(userDetail);
@@ -63,25 +61,30 @@ public class UserDaoTest {
     }
 
     @Test
-    //FIXME testcase should be repeatable, i.e. should work without clean
-    @Ignore
+    // FIXME testcase should be repeatable, i.e. should work without clean
     public void testInsertUser() {
         System.out.println("Inside testInsertUser");
-        int count = getNumRows();
+        insertAnotherRow();
+        assertEquals(2, getNumRows());
+        
+        insertAnotherRowWithSameParamsAgain();
+        assertEquals(2, getNumRows());
+    }
 
-        assertEquals(1, count);
+    private void insertAnotherRowWithSameParamsAgain() {
+        insertAnotherRow();
+        
+    }
+
+    private void insertAnotherRow() {
         UserDetail userDetail = new UserDetail();
         userDetail.setAge(20);
         userDetail.setId(2);
-
-        // insert the row in recording mode
         userDao.save(userDetail);
     }
- 
 
     @Test
-    @Ignore
-    //FIXME
+    // FIXME
     public void testUpdateUser() {
         System.out.println("Inside testUpdateUser");
         int count = getNumRows();
@@ -96,49 +99,59 @@ public class UserDaoTest {
 
         assertEquals(1, affectedRows);
 
-        int age = jdbcTemplate
-                .queryForInt("select age from userdetail where id=1");
-        assertEquals(30, age);
+        updateRecordToOriginalValue(1, 10);
+        createAnotherRecordExternally(1, 10);
+        assertEquals(2, getNumRows());
 
-        userDetail.setAge(40);
+        userDetail.setAge(30);
         userDetail.setId(1);
-        userDao.update(userDetail);
+        int numRowsAffected = userDao.update(userDetail); //update again but this time as update query is cached it will not affect the db
 
-        age = jdbcTemplate.queryForInt("select age from userdetail where id=1");
+        assertEquals(1, numRowsAffected); //numRowAffected comes from cached response and hence should be 1 instead of 2
 
-        assertEquals(30, age);
+        List<Integer> ageList = jdbcTemplate.queryForList(
+                "select age from userdetail where id=1", Integer.class);
+
+        assertEquals(10, ageList.get(0).intValue());
+        assertEquals(10, ageList.get(1).intValue());
+
+    }
+
+    private void updateRecordToOriginalValue(int id, int age) {
+        jdbcTemplate.update("update userdetail set age=? where id=?",
+                new Object[] { new Integer(age), new Integer(id) });
     }
 
     @Test
-    @Ignore
-    //FIXME
+    // FIXME
     public void testDeleteUser() {
         System.out.println("Inside testDeleteUser");
-        int count = getNumRows();
 
-        assertEquals(1, count);
-        jdbcTemplate.update("insert into USERDETAIL values (2,20)");
+        assertEquals(1, getNumRows());
+        createAnotherRecordExternally(2, 20);
+        assertEquals(2, getNumRows());
 
-        count = getNumRows();
+        deleteRecordWithUserDao(2);
+        assertEquals(1, getNumRows());
 
-        assertEquals(2, count);
+        createAnotherRecordExternally(2, 20);
+        deleteRecordWithUserDao(2); // should not delete this time as response
+                                    // of delete is cached in previous call
 
+        assertEquals(2, getNumRows());
+    }
+
+    private UserDetail deleteRecordWithUserDao(int id) {
         UserDetail userDetail = new UserDetail();
-        userDetail.setId(2);
+        userDetail.setId(id);
         // insert the row in recording mode
         userDao.delete(userDetail);
+        return userDetail;
+    }
 
-        count = getNumRows();
-
-        assertEquals(1, count);
-
-        userDetail.setId(1);
-
-        userDao.delete(userDetail);
-
-        count = getNumRows();
-
-        assertEquals(1, count);
+    private void createAnotherRecordExternally(int id, int age) {
+        jdbcTemplate.update("insert into USERDETAIL values (" + id + "," + age
+                + ")");
     }
 
     @Test
@@ -146,24 +159,20 @@ public class UserDaoTest {
         System.out.println("Inside testMethodBasedRecording");
         MethodMocktail methodMocktail = new MethodMocktail();
         methodMocktail.setUp(this);
-        
-        //get all records, insert another one, get all records again. should be n+1
-        
+
+        // get all records, insert another one, get all records again. should be
+        // n+1
+
         List<UserDetail> userDetails = userDao.getAll();
         assertThat(1, is(userDetails.size()));
 
-        UserDetail newUserDetail = new UserDetail();
-        newUserDetail.setAge(20);
-        newUserDetail.setId(2);
-
-        // insert the row in recording mode
-        userDao.save(newUserDetail);
+        insertAnotherRow();
 
         userDetails = userDao.getAll();
         assertThat(2, is(userDetails.size()));
         methodMocktail.close();
     }
-    
+
     private int getNumRows() {
         return jdbcTemplate.queryForInt("select count(*) from userdetail");
     }
