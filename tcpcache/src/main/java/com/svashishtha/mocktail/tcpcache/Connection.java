@@ -28,6 +28,9 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.svashishtha.mocktail.MocktailMode;
 import com.svashishtha.mocktail.repository.DiskObjectRepository;
 
@@ -35,7 +38,7 @@ import com.svashishtha.mocktail.repository.DiskObjectRepository;
  * a connection listens to a single current connection
  */
 class Connection extends Thread {
-    
+    private static final Logger LOG = LoggerFactory.getLogger(Connection.class);
 
     /**
      * Field inputText
@@ -139,12 +142,22 @@ class Connection extends Thread {
                 bufferedData = createInputRequest(incomingStream);
             }
             
-            try {
-                if (MocktailMode.PLAYBACK.equals(config.getMocktailMode()) && isObjectExistInCache()) {
-                    writeResponseFromCache(inSocketOutputStream);
-                } else {
+            if (MocktailMode.PLAYBACK.equals(config.getMocktailMode()) && isObjectExistInCache()) {
+                writeResponseFromCache(inSocketOutputStream);
+            } else {
+                try {
                     getResponseFromTargetServer(incomingStream, inSocketOutputStream, bufferedData);
+                } catch (ConnectException e) {
+                    LOG.error(String.format("Could not connect to target host: %s : %s, Start the service for recording mode",
+                                    config.getTargetHost(),
+                                    config.getTargetPort()), e.getMessage());
+                    return;
                 }
+            }
+            
+            
+            
+/*
             } catch (ConnectException e) {
                 e.printStackTrace();
                 if (config.isCachingOn()) {
@@ -155,7 +168,7 @@ class Connection extends Thread {
                     writeResponseFromCache(inSocketOutputStream);
                 }
                 return;
-            }
+            }*/
         } catch (Exception e) {
             StringWriter st = new StringWriter();
             PrintWriter wr = new PrintWriter(st);
