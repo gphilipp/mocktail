@@ -140,13 +140,10 @@ class Connection extends Thread {
             }
             
             try {
-                if (MocktailMode.PLAYBACK.equals(config.getMocktailMode())) {
-                    if (isObjectExistInCache()) {
-                        writeResponseFromCache(inSocketOutputStream);
-                    }
+                if (MocktailMode.PLAYBACK.equals(config.getMocktailMode()) && isObjectExistInCache()) {
+                    writeResponseFromCache(inSocketOutputStream);
                 } else {
-                    getResponseFromTargetServer(incomingStream,
-                            inSocketOutputStream, bufferedData);
+                    getResponseFromTargetServer(incomingStream, inSocketOutputStream, bufferedData);
                 }
             } catch (ConnectException e) {
                 e.printStackTrace();
@@ -170,36 +167,32 @@ class Connection extends Thread {
         }
     }
 
-    private void getResponseFromTargetServer(
-            InputStream incomingStream, OutputStream inSocketOutputStream,
-            String bufferedData) throws UnknownHostException, IOException,
+    private void getResponseFromTargetServer(InputStream incomingStream,
+                                             OutputStream inSocketOutputStream,
+                                             String bufferedData) throws UnknownHostException, IOException,
             UnsupportedEncodingException, InterruptedException {
         InputStream outSocketInputStream;
         OutputStream outSocketOutputStream;
         outSocket = new Socket(config.getTargetHost(), config.getTargetPort());
         outSocketOutputStream = outSocket.getOutputStream();
         byte[] bytes = bufferedData.getBytes();
-        System.err
-                .println("The bytes to be written on output socket are:"
-                        + new String(bytes, "UTF-8"));
+        System.err.println("The bytes to be written on output socket are:" + new String(bytes, "UTF-8"));
         outSocketOutputStream.write(bytes);
 
         // sends the request to endpoint
         // this is the channel to the endpoint
-        rr1 = new SocketRR(this, inSocket, incomingStream, outSocket,
-                outSocketOutputStream, "request:", config);
+        rr1 = new SocketRR(this, inSocket, incomingStream, outSocket, outSocketOutputStream, "request:", config);
 
         // gets the response from endpoint
         // create the response slow link from the inbound slow link
         // this is the channel from the endpoint
         outSocketInputStream = outSocket.getInputStream();
-        rr2 = new SocketRR(this, outSocket, outSocketInputStream, inSocket,
-                inSocketOutputStream, "response:", config);
-        
-//        rr1.join();
-//        rr2.join();
-        System.err.println("rr1 isDone?"+ rr1.isDone());
-        System.err.println("rr2 isDone?"+ rr2.isDone());
+        rr2 = new SocketRR(this, outSocket, outSocketInputStream, inSocket, inSocketOutputStream, "response:", config);
+
+        // rr1.join();
+        // rr2.join();
+        System.err.println("rr1 isDone?" + rr1.isDone());
+        System.err.println("rr2 isDone?" + rr2.isDone());
     }
     
  
